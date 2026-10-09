@@ -1,0 +1,3019 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AL-BAI‘ — MUAMALAT DARJAH 4 | Kuiz Interaktif Pelajaran 1: Jual Beli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emeraldPrimary: '#059669',
+            emeraldDark: '#064e3b',
+            emeraldLight: '#10b981',
+            creamSoft: '#fdfbf7',
+            creamCard: '#fffbeb',
+            goldWarm: '#f59e0b',
+            goldAccent: '#d97706',
+            turquoiseSoft: '#0d9488',
+            turquoiseLight: '#14b8a6',
+            sandBg: '#fef3c7'
+          },
+          fontFamily: {
+            title: ['"Fredoka"', 'sans-serif'],
+            arabic: ['"Amiri"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          boxShadow: {
+            'game': '0 6px 0 0 rgba(4, 120, 87, 0.9), 0 10px 20px -5px rgba(0, 0, 0, 0.25)',
+            'game-gold': '0 6px 0 0 rgba(180, 83, 9, 0.9), 0 10px 20px -5px rgba(245, 158, 11, 0.35)',
+            'game-pressed': '0 2px 0 0 rgba(4, 120, 87, 0.9), 0 4px 6px -1px rgba(0, 0, 0, 0.2)',
+            'card-soft': '0 10px 30px -10px rgba(6, 78, 59, 0.15)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @keyframes floatSoft {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
+      50% { box-shadow: 0 0 24px rgba(245, 158, 11, 0.7); }
+    }
+    .animate-float {
+      animation: floatSoft 3.2s ease-in-out infinite;
+    }
+    .btn-3d {
+      transition: all 0.12s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(3px);
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fdfbf7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #10b981;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-[#f7f5eb] text-slate-800 font-sans min-h-screen flex flex-col select-none overflow-x-hidden">
+
+  <header class="bg-gradient-to-r from-emeraldDark via-emeraldPrimary to-turquoiseSoft text-white shadow-lg sticky top-0 z-40 border-b-4 border-goldWarm">
+    <div class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('screen-home')">
+        <div class="w-10 h-10 rounded-2xl bg-amber-400 flex items-center justify-center text-2xl shadow-inner transform -rotate-3 hover:rotate-0 transition">
+          📖
+        </div>
+        <div>
+          <h1 class="font-title font-bold text-lg md:text-xl tracking-wide leading-tight text-amber-200">
+            AL-BAI‘
+          </h1>
+          <p class="text-[10px] md:text-xs text-emerald-100 font-medium">MUAMALAT DARJAH 4 • Kuiz Pelajaran 1 (Jual Beli)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 md:space-x-3">
+        <div class="flex items-center bg-black/25 backdrop-blur-sm px-2.5 py-1 rounded-full border border-amber-300/40 text-amber-300 font-bold text-xs md:text-sm shadow-inner" title="Jumlah Syiling">
+          <span class="mr-1 text-base animate-bounce">🪙</span>
+          <span id="header-coins">0</span>
+        </div>
+
+        <div class="hidden sm:flex items-center bg-black/25 backdrop-blur-sm px-2.5 py-1 rounded-full border border-emerald-300/40 text-emerald-200 font-bold text-xs md:text-sm" title="Lencana Pembelajaran">
+          <span class="mr-1 text-base">🏅</span>
+          <span id="header-badges">0/5</span>
+        </div>
+
+        <button onclick="showScreen('screen-levels')" class="bg-emerald-700/80 hover:bg-emerald-600 px-2.5 py-1.5 rounded-xl text-white transition flex items-center space-x-1 text-xs font-semibold" title="Pilih Tahap">
+          <span>📋</span>
+          <span class="hidden md:inline">Pilih Tahap</span>
+        </button>
+
+        <button onclick="openModal('modal-notes')" class="bg-teal-700/80 hover:bg-teal-600 px-2.5 py-1.5 rounded-xl text-white transition flex items-center space-x-1 text-xs font-semibold" title="Nota Pembelajaran">
+          <span>📚</span>
+          <span class="hidden md:inline">Nota</span>
+        </button>
+
+        <button onclick="openModal('modal-manual')" class="bg-amber-600/80 hover:bg-amber-500 px-2.5 py-1.5 rounded-xl text-white transition flex items-center space-x-1 text-xs font-semibold" title="Manual Pengguna">
+          <span>📖</span>
+          <span class="hidden md:inline">Manual</span>
+        </button>
+
+        <button onclick="openModal('modal-settings')" class="bg-emerald-900/80 hover:bg-emerald-800 p-2 rounded-xl text-emerald-100 transition" title="Tetapan Audio">
+          ⚙️
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center p-3 md:p-6 relative max-w-6xl mx-auto w-full">
+
+    <!-- 1. SKRIN UTAMA (HOME) -->
+    <section id="screen-home" class="w-full max-w-3xl flex flex-col items-center text-center py-4">
+      <div class="relative w-full max-w-2xl mx-auto mb-5">
+        <div class="bg-gradient-to-b from-emerald-800 via-emerald-700 to-teal-900 p-6 md:p-8 rounded-3xl text-white border-4 border-amber-400 shadow-2xl relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-400/20 rounded-full blur-2xl"></div>
+          <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl"></div>
+
+          <!-- Watak Tunggal: Ustaz Faris -->
+          <div class="flex justify-center items-center mb-3">
+            <div class="flex flex-col items-center animate-float">
+              <div class="w-24 h-24 md:w-28 md:h-28 bg-emerald-100 rounded-full border-4 border-amber-400 shadow-xl flex items-center justify-center text-5xl md:text-6xl">
+                👳‍♂️
+              </div>
+              <span class="text-xs md:text-sm bg-amber-500 text-slate-900 px-3 py-0.5 rounded-full mt-2 font-bold shadow">
+                Ustaz Faris (Guru Pembimbing)
+              </span>
+            </div>
+          </div>
+
+          <h2 class="font-title text-3xl md:text-5xl font-black text-amber-300 tracking-wide drop-shadow-md">
+            AL-BAI‘
+          </h2>
+          <h3 class="font-title text-lg md:text-2xl font-bold text-emerald-100 mt-1">
+            MUAMALAT DARJAH 4
+          </h3>
+          <p class="font-arabic text-xl md:text-2xl text-amber-200 mt-2">كِتَابُ البَيْعِ — فِقْهُ المُعَامَلَاتِ</p>
+          <div class="inline-block bg-emerald-950/70 border border-emerald-400/40 rounded-full px-4 py-1 text-xs md:text-sm font-semibold text-emerald-200 mt-3 shadow">
+            Kuiz Interaktif: Pelajaran 1 — Jual Beli (SAKNJ)
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-2xl bg-white border-2 border-emerald-200 rounded-2xl p-5 shadow-card-soft mb-6 text-left flex items-start space-x-4">
+        <div class="text-4xl flex-shrink-0 bg-emerald-100 p-2.5 rounded-2xl">
+          🕌
+        </div>
+        <div>
+          <h4 class="font-title font-bold text-emerald-900 text-base md:text-lg flex items-center">
+            <span>Pesanan Ustaz Faris:</span>
+            <span class="ml-2 text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Ulang Kaji Muamalat</span>
+          </h4>
+          <p class="text-xs md:text-sm text-slate-700 mt-1.5 leading-relaxed">
+            “Assalamualaikum! Selamat datang ke kuiz Muamalat Darjah 4. Bersama Ustaz Faris, mari kita ulang kaji Pelajaran 1: Jual Beli. Jawab soalan tentang pengertian, dalil, rukun, syarat dan hukum jual beli berdasarkan nota pembelajaran. Kumpulkan markah dan lengkapkan kelima-lima tahap!”
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-xl">
+        <button onclick="startGame()" class="btn-3d w-full bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-500 text-slate-900 font-title font-black text-base md:text-lg py-3.5 px-6 rounded-2xl shadow-game-gold flex items-center justify-center space-x-2 border-t-2 border-amber-200">
+          <span>🚀</span>
+          <span>MULA KUIZ</span>
+        </button>
+
+        <button onclick="showScreen('screen-levels')" class="btn-3d w-full bg-gradient-to-b from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-700 text-white font-title font-bold text-base md:text-lg py-3.5 px-6 rounded-2xl shadow-game flex items-center justify-center space-x-2 border-t-2 border-emerald-400">
+          <span>📋</span>
+          <span>PILIH TAHAP</span>
+        </button>
+
+        <button onclick="openModal('modal-notes')" class="btn-3d w-full bg-white hover:bg-teal-50 text-teal-800 border-2 border-teal-500 font-title font-bold text-sm py-3 px-4 rounded-2xl shadow-sm flex items-center justify-center space-x-2">
+          <span>📚</span>
+          <span>NOTA PEMBELAJARAN</span>
+        </button>
+
+        <button onclick="openModal('modal-manual')" class="btn-3d w-full bg-white hover:bg-amber-50 text-amber-900 border-2 border-amber-500 font-title font-bold text-sm py-3 px-4 rounded-2xl shadow-sm flex items-center justify-center space-x-2">
+          <span>📖</span>
+          <span>MANUAL PENGGUNA</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-3 mt-5 text-xs text-slate-500">
+        <button onclick="openModal('modal-settings')" class="hover:text-emerald-700 font-semibold underline flex items-center">
+          ⚙️ Tetapan Audio
+        </button>
+        <span>•</span>
+        <button onclick="openBonusMode()" class="hover:text-amber-700 font-semibold underline flex items-center">
+          ⚡ Cabaran Kilat (Bonus)
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. SKRIN PILIHAN 5 TAHAP KUIZ -->
+    <section id="screen-levels" class="hidden w-full max-w-4xl flex-col items-center">
+      <div class="w-full bg-white border-2 border-emerald-200 rounded-2xl p-4 shadow-md mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">📋</span>
+            <h2 class="font-title font-bold text-xl text-emerald-900">Pilih Tahap Kuiz Muamalat</h2>
+          </div>
+          <p class="text-xs text-slate-600 mt-0.5">Selesaikan setiap tahap dengan markah 10/10 untuk menguasai topik Jual Beli.</p>
+        </div>
+        
+        <div class="flex items-center space-x-3 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200">
+          <div class="text-left">
+            <div class="text-[10px] text-emerald-700 font-bold uppercase">Kemajuan Keseluruhan</div>
+            <div class="text-sm font-black text-emerald-900" id="levels-progress-text">0 / 5 Tahap (0%)</div>
+          </div>
+          <div class="w-24 bg-emerald-200 h-3 rounded-full overflow-hidden">
+            <div id="levels-progress-bar" class="bg-emerald-600 h-full w-0 transition-all duration-500"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kad 5 Tahap Kuiz Pembelajaran -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-5">
+
+        <!-- Kad Tahap 1 -->
+        <div id="card-stage-1" class="bg-white rounded-2xl p-5 border-2 border-emerald-400 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl p-2 bg-emerald-100 rounded-xl">📖</span>
+              <span id="badge-stage-1" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                Tahap 1
+              </span>
+            </div>
+            <h3 class="font-title font-bold text-slate-900 text-lg mt-3">Tahap 1 — Pengertian Jual Beli</h3>
+            <p class="text-xs text-slate-600 mt-1">Takrif jual beli dari segi Bahasa dan Syarak serta konsep asas pertukaran harta.</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+            <span id="status-stage-1" class="text-xs font-bold text-emerald-600">● Terbuka</span>
+            <button onclick="enterLevel(1)" class="btn-3d px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+              Mula Kuiz ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- Kad Tahap 2 -->
+        <div id="card-stage-2" class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl p-2 bg-amber-100 rounded-xl">📜</span>
+              <span id="badge-stage-2" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-200 text-slate-600">
+                Tahap 2
+              </span>
+            </div>
+            <h3 class="font-title font-bold text-slate-900 text-lg mt-3">Tahap 2 — Dalil Jual Beli</h3>
+            <p class="text-xs text-slate-600 mt-1">Surah al-Baqarah ayat 275, terjemahan, penghalalan jual beli dan pengharaman riba.</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+            <span id="status-stage-2" class="text-xs font-bold text-slate-500">🔒 Terkunci</span>
+            <button id="btn-stage-2" onclick="enterLevel(2)" class="btn-3d px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+              Kunci 🔒
+            </button>
+          </div>
+        </div>
+
+        <!-- Kad Tahap 3 -->
+        <div id="card-stage-3" class="bg-white rounded-2xl p-5 border-2 border-teal-400 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl p-2 bg-teal-100 rounded-xl">⚖️</span>
+              <span id="badge-stage-3" class="text-xs font-bold px-3 py-1 rounded-full bg-teal-100 text-teal-800 border border-teal-300">
+                Tahap 3
+              </span>
+            </div>
+            <h3 class="font-title font-bold text-slate-900 text-lg mt-3">Tahap 3 — Rukun Jual Beli</h3>
+            <p class="text-xs text-slate-600 mt-1">Tiga rukun utama: Al-‘Aqidan, Al-Ma‘qud ‘Alaih dan Al-Sighah (Ijab & Kabul).</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+            <span id="status-stage-3" class="text-xs font-bold text-slate-500">🔒 Terkunci</span>
+            <button id="btn-stage-3" onclick="enterLevel(3)" class="btn-3d px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+              Kunci 🔒
+            </button>
+          </div>
+        </div>
+
+        <!-- Kad Tahap 4 -->
+        <div id="card-stage-4" class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl p-2 bg-yellow-100 rounded-xl">🔍</span>
+              <span id="badge-stage-4" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-200 text-slate-600">
+                Tahap 4
+              </span>
+            </div>
+            <h3 class="font-title font-bold text-slate-900 text-lg mt-3">Tahap 4 — Syarat Jual Beli</h3>
+            <p class="text-xs text-slate-600 mt-1">Syarat Aqidan, syarat barang dan harga, serta 5 syarat sah Ijab dan Kabul.</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+            <span id="status-stage-4" class="text-xs font-bold text-slate-500">🔒 Terkunci</span>
+            <button id="btn-stage-4" onclick="enterLevel(4)" class="btn-3d px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+              Kunci 🔒
+            </button>
+          </div>
+        </div>
+
+        <!-- Kad Tahap 5 -->
+        <div id="card-stage-5" class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md flex flex-col justify-between md:col-span-2">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl p-2 bg-amber-100 rounded-xl">👑</span>
+              <span id="badge-stage-5" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-200 text-slate-600">
+                Tahap 5 (Akhir)
+              </span>
+            </div>
+            <h3 class="font-title font-bold text-slate-900 text-lg mt-3">Tahap 5 — Hukum Jual Beli & Ulang Kaji</h3>
+            <p class="text-xs text-slate-600 mt-1">Lima hukum jual beli (Harus, Wajib, Sunat, Makruh, Haram) serta penilaian menyeluruh topik Pelajaran 1.</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+            <span id="status-stage-5" class="text-xs font-bold text-slate-500">🔒 Terbuka Selepas Tahap 4 Selesai</span>
+            <button id="btn-stage-5" onclick="enterLevel(5)" class="btn-3d px-5 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+              Kunci 🔒
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bar Bawah Menu Tahap -->
+      <div class="w-full flex flex-col sm:flex-row items-center justify-between bg-emerald-900 text-white rounded-2xl p-3.5 px-4 gap-3">
+        <div class="flex items-center space-x-2 text-xs">
+          <span class="text-lg">💡</span>
+          <span>Dapatkan <strong>10/10</strong> pada setiap tahap untuk membuka tahap seterusnya dan meraih lencana!</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="showScreen('screen-home')" class="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition">
+            Kembali ke Menu
+          </button>
+          <button onclick="openBonusMode()" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-bold text-xs transition flex items-center space-x-1">
+            <span>⚡</span>
+            <span>Cabaran Kilat</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SKRIN KUIZ & SOALAN (GAMEPLAY) -->
+    <section id="screen-game" class="hidden w-full max-w-3xl flex-col items-center">
+      
+      <!-- Bar Pengepala Tahap Soalan -->
+      <div class="w-full bg-white rounded-2xl border-2 border-emerald-300 p-4 shadow-md mb-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <button onclick="confirmExitLevel()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 text-xs font-bold transition flex items-center space-x-1">
+            <span>✕</span>
+            <span>Kembali ke Menu</span>
+          </button>
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700" id="game-location-tag">Tahap 1</div>
+            <h3 class="font-title font-bold text-base md:text-lg text-slate-800" id="game-stage-title">Pengertian Jual Beli</h3>
+          </div>
+        </div>
+
+        <!-- Kaunter Soalan & Markah Semasa -->
+        <div class="flex items-center space-x-3">
+          <div class="text-right">
+            <div class="text-[10px] text-slate-500 font-semibold uppercase">Soalan</div>
+            <div class="font-title font-bold text-emerald-700 text-sm md:text-base">
+              <span id="current-q-num">1</span> / 10
+            </div>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center font-title font-bold text-amber-800 text-xs shadow-inner" id="level-score-counter">
+            0/10
+          </div>
+        </div>
+      </div>
+
+      <!-- Bilah Garis Kemajuan Soalan -->
+      <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-4 shadow-inner">
+        <div id="game-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full w-10% transition-all duration-300"></div>
+      </div>
+
+      <!-- Bar Pilihan Mod Menjawab (Tekan Jawapan Biasa / Mod Isyarat Jari Skrin) -->
+      <div class="w-full bg-emerald-50 border border-emerald-200 rounded-2xl p-2.5 mb-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-bold text-emerald-900 flex items-center">
+            <span class="mr-1">🎮</span> Kaedah Menjawab:
+          </span>
+          <div class="inline-flex rounded-xl bg-white p-1 border border-emerald-300 shadow-inner">
+            <button id="btn-mode-touch" onclick="setAnswerMode('touch')" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-sm transition flex items-center space-x-1">
+              <span>👆</span>
+              <span>Tekan Jawapan</span>
+            </button>
+            <button id="btn-mode-gesture" onclick="setAnswerMode('gesture')" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-emerald-700 transition flex items-center space-x-1">
+              <span>🖐️</span>
+              <span>Isyarat Jari Sebenar</span>
+            </button>
+          </div>
+          <button onclick="openChooseModeModal()" class="px-2 py-1 rounded-lg text-[11px] font-bold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200 transition border border-emerald-300">
+            Tukar Mod 🔄
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-1.5">
+          <button onclick="openModal('modal-gesture-guide')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 rounded-xl text-xs font-bold transition flex items-center space-x-1" title="Panduan Isyarat">
+            <span>📖</span>
+            <span>Panduan Isyarat Jari</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel Pengesanan Isyarat Jari Sebenar (Kamera Latar Belakang Tanpa Paparan Video) -->
+      <div id="gesture-hud-container" class="hidden w-full mb-3 p-3.5 bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-950 text-white rounded-2xl shadow-md border-2 border-amber-400">
+        <!-- Elemen Video Tersembunyi (Hanya untuk pemprosesan AI, tidak dipaparkan pada skrin) -->
+        <video id="gesture-hidden-video" class="hidden" playsinline muted autoplay></video>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-emerald-700/60">
+          <div class="flex items-center space-x-2">
+            <span class="relative flex h-3 w-3">
+              <span id="gesture-status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span id="gesture-status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span id="gesture-status-text" class="text-xs font-bold text-emerald-200">
+              Kamera Aktif di Latar Belakang (Tanpa Paparan Video)
+            </span>
+          </div>
+          <span class="text-[10px] bg-emerald-800/80 text-amber-200 px-2.5 py-0.5 rounded-full border border-emerald-600">
+            🔒 Privasi: Tiada video atau imej disimpan
+          </span>
+        </div>
+
+        <!-- Maklumat Isyarat Yang Dikesan Secara Langsung & Bilah Kestabilan 1 Saat -->
+        <div class="mt-3 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 w-full md:w-auto">
+            <div id="gesture-current-icon" class="w-12 h-12 rounded-2xl bg-emerald-800 border-2 border-amber-400 flex items-center justify-center text-2xl shadow-inner flex-shrink-0">
+              ✋
+            </div>
+            <div>
+              <div class="text-[10px] text-emerald-300 font-semibold uppercase tracking-wider">Isyarat Dikesan:</div>
+              <div id="gesture-current-label" class="font-title font-bold text-sm md:text-base text-amber-300">
+                Sila tunjukkan 1, 2, 3 atau 4 jari di hadapan kamera...
+              </div>
+            </div>
+          </div>
+
+          <!-- Bilah Kemajuan Tahan 1 Saat -->
+          <div class="w-full md:w-48 bg-emerald-950/80 p-2 rounded-xl border border-emerald-700/70 text-right">
+            <div class="flex justify-between text-[10px] font-bold text-emerald-300 mb-1">
+              <span>Kestabilan Isyarat:</span>
+              <span id="gesture-hold-percent">0%</span>
+            </div>
+            <div class="w-full bg-emerald-900 h-2.5 rounded-full overflow-hidden border border-emerald-700">
+              <div id="gesture-hold-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full w-0 transition-all duration-100"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="gesture-error-alert" class="hidden mt-2 p-2 bg-rose-900/80 border border-rose-500 rounded-xl text-rose-200 text-xs flex items-center justify-between">
+          <span id="gesture-error-msg">⚠️ Kamera tidak dapat diakses atau kebenaran ditolak.</span>
+          <button onclick="setAnswerMode('touch')" class="px-2.5 py-1 bg-white text-rose-900 rounded-lg font-bold text-[11px] hover:bg-rose-100 transition">
+            Tukar ke Mod Tekan
+          </button>
+        </div>
+      </div>
+
+      <!-- Kad Soalan Utama -->
+      <div class="w-full bg-white rounded-3xl border-3 border-emerald-200 shadow-xl overflow-hidden p-5 md:p-6 mb-4">
+        
+        <!-- Bimbingan Ustaz Faris -->
+        <div class="flex items-start space-x-3 pb-4 mb-4 border-b border-slate-100">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center text-3xl flex-shrink-0 shadow">
+            👳‍♂️
+          </div>
+          <div class="flex-grow">
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-xs text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full">Ustaz Faris</span>
+              <span class="text-[10px] text-slate-500 font-medium">Bimbingan Muamalat SAKNJ</span>
+            </div>
+            <p id="question-scenario" class="text-xs text-slate-600 mt-1 italic">
+              "Fahami soalan ini berpandukan nota pelajaran Muamalat:"
+            </p>
+          </div>
+        </div>
+
+        <!-- Paparan Dalil Arab (Jika Berkaitan) -->
+        <div id="question-arabic-box" class="hidden mb-4 p-3 bg-amber-50/80 border border-amber-300 rounded-2xl text-center">
+          <p id="question-arabic-text" class="font-arabic text-xl md:text-2xl text-slate-900 leading-relaxed dir-rtl"></p>
+          <p id="question-arabic-sub" class="text-xs text-amber-900 font-semibold mt-1"></p>
+        </div>
+
+        <!-- Teks Soalan -->
+        <h4 id="question-main-text" class="font-bold text-slate-800 text-sm md:text-base leading-relaxed mb-4">
+          Memuatkan soalan...
+        </h4>
+
+        <!-- Bekas Pilihan Jawapan Teks Biasa -->
+        <div id="options-container" class="grid grid-cols-1 gap-2.5">
+          <!-- Butang pilihan dijana secara dinamik -->
+        </div>
+
+        <!-- Ulasan Jawapan & Penerangan -->
+        <div id="explanation-box" class="hidden mt-4 p-4 rounded-2xl border transition-all text-xs md:text-sm">
+          <div class="flex items-center space-x-2 font-bold mb-1" id="explanation-title">
+            <span>💡</span>
+            <span>Ulasan Guru:</span>
+          </div>
+          <p id="explanation-text" class="text-slate-700 leading-relaxed"></p>
+          
+          <div class="mt-3 flex justify-end">
+            <button id="btn-next-question" onclick="proceedNextQuestion()" class="btn-3d px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs md:text-sm rounded-xl shadow flex items-center space-x-1">
+              <span>Seterusnya</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 4. SKRIN KEPUTUSAN TAHAP -->
+    <section id="screen-result" class="hidden w-full max-w-xl flex-col items-center text-center">
+      <div class="w-full bg-white rounded-3xl border-4 border-amber-400 p-6 md:p-8 shadow-2xl relative overflow-hidden">
+        
+        <div id="result-icon-container" class="w-24 h-24 mx-auto rounded-full bg-amber-100 border-4 border-amber-400 flex items-center justify-center text-5xl mb-4 shadow animate-float">
+          🏆
+        </div>
+
+        <h2 id="result-title" class="font-title font-black text-2xl md:text-3xl text-emerald-900">
+          Tahap Selesai!
+        </h2>
+        
+        <p id="result-subtitle" class="text-xs md:text-sm text-slate-600 mt-1 max-w-md mx-auto">
+          Anda telah menjawab kesemua soalan bagi tahap ini.
+        </p>
+
+        <!-- Kad Markah dan Ganjaran -->
+        <div class="my-5 p-4 bg-emerald-50 rounded-2xl border border-emerald-200 grid grid-cols-2 gap-3">
+          <div class="p-2 bg-white rounded-xl shadow-sm">
+            <span class="text-[10px] text-slate-400 font-bold uppercase">Markah Diperoleh</span>
+            <div id="result-score-display" class="font-title font-black text-2xl text-emerald-800">10 / 10</div>
+            <span id="result-status-tag" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">LULUS CEMERLANG</span>
+          </div>
+          <div class="p-2 bg-white rounded-xl shadow-sm">
+            <span class="text-[10px] text-slate-400 font-bold uppercase">Ganjaran Syiling</span>
+            <div id="result-reward-coins" class="font-title font-black text-2xl text-amber-500">+100 🪙</div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Syiling Pembelajaran</span>
+          </div>
+        </div>
+
+        <!-- Lencana Diperoleh -->
+        <div id="result-badge-container" class="hidden p-3 bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100 border border-amber-300 rounded-2xl mb-4 flex items-center space-x-3 text-left">
+          <div class="text-3xl p-2 bg-white rounded-xl shadow-sm" id="result-badge-icon">🏅</div>
+          <div>
+            <span class="text-[10px] font-black text-amber-700 uppercase tracking-wider">Lencana Tahap Diperoleh!</span>
+            <div class="font-bold text-sm text-slate-800" id="result-badge-name">Pakar Takrif Jual Beli</div>
+            <p class="text-[11px] text-slate-500" id="result-badge-desc">Menjawab semua soalan dengan betul.</p>
+          </div>
+        </div>
+
+        <!-- Peringatan Syarat 10/10 -->
+        <div id="result-requirement-note" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs">
+          ⚠️ <strong>Syarat Lulus:</strong> Anda mesti mendapat markah penuh <strong>10/10</strong> untuk membuka tahap seterusnya. Sila cuba lagi untuk menyempurnakan kefahaman anda!
+        </div>
+
+        <!-- Butang Tindakan Keputusan -->
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <button id="btn-result-retry" onclick="retryCurrentLevel()" class="btn-3d flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs md:text-sm rounded-xl shadow">
+            🔄 Cuba Lagi (10/10)
+          </button>
+          <button id="btn-result-next" onclick="proceedToNextLevelFromSummary()" class="btn-3d flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs md:text-sm rounded-xl shadow">
+            📋 Kembali ke Pilihan Tahap
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. SKRIN TAMAT KUIZ & SIJIL KEJAYAAN -->
+    <section id="screen-victory" class="hidden w-full max-w-2xl flex-col items-center text-center">
+      <div class="w-full bg-gradient-to-b from-white via-amber-50 to-emerald-50 rounded-3xl border-4 border-amber-400 p-6 md:p-8 shadow-2xl relative">
+        <div class="text-6xl mb-3 animate-bounce">👑</div>
+        <h2 class="font-title font-black text-2xl md:text-4xl text-emerald-900">
+          TAHNIAH! ANDA TELAH MENGUASAI KUIZ AL-BAI‘!
+        </h2>
+        <p class="font-arabic text-xl text-emerald-700 mt-1">بَارَكَ اللَّهُ فِيكُمْ — فِقْهُ المُعَامَلَاتِ الدَّرَجَةُ الرَّابِعَةُ</p>
+        
+        <p class="text-xs md:text-sm text-slate-600 mt-2 max-w-lg mx-auto">
+          Syabas! Anda telah melengkapkan kesemua 5 tahap Muamalat Darjah 4 (Pelajaran 1: Jual Beli) dengan markah penuh 10/10 dan mengumpul kesemua 5 lencana kecemerlangan.
+        </p>
+
+        <!-- Koleksi 5 Lencana -->
+        <div class="my-6 grid grid-cols-2 sm:grid-cols-5 gap-2" id="victory-badges-list">
+          <!-- Dijana oleh JavaScript -->
+        </div>
+
+        <!-- Statistik Akhir -->
+        <div class="p-4 bg-white rounded-2xl border border-amber-300 shadow-sm flex items-center justify-around mb-6 text-center">
+          <div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Jumlah Syiling</div>
+            <div class="text-xl font-black text-amber-500" id="victory-total-coins">500 🪙</div>
+          </div>
+          <div class="w-px h-8 bg-slate-200"></div>
+          <div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Tahap Selesai</div>
+            <div class="text-xl font-black text-emerald-700">5 / 5 (100%)</div>
+          </div>
+          <div class="w-px h-8 bg-slate-200"></div>
+          <div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Keputusan</div>
+            <div class="text-xs font-black text-teal-700 bg-teal-100 px-2.5 py-1 rounded-full">MUMTAZ</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button onclick="showScreen('screen-levels')" class="btn-3d flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl shadow">
+            📋 Kembali ke Pilihan Tahap
+          </button>
+          <button onclick="openBonusMode()" class="btn-3d flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-sm rounded-xl shadow">
+            ⚡ Main Cabaran Kilat (Bonus)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. MOD CABARAN KILAT BERMASA (AKTIVITI PILIHAN) -->
+    <section id="screen-bonus" class="hidden w-full max-w-2xl flex-col items-center">
+      <div class="w-full bg-white rounded-3xl border-3 border-amber-400 p-5 md:p-6 shadow-xl">
+        <div class="flex items-center justify-between pb-3 border-b border-amber-200 mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">⚡</span>
+            <div>
+              <h3 class="font-title font-bold text-lg text-amber-900">Cabaran Kilat (Pusingan Bonus Bermasa)</h3>
+              <p class="text-[11px] text-slate-500">Aktiviti pengukuhan pantas berpandukan sukatan Muamalat Darjah 4.</p>
+            </div>
+          </div>
+          <button onclick="showScreen('screen-levels')" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">
+            ✕ Batal
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between bg-amber-50 rounded-2xl p-3 border border-amber-200 mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">⏱️</span>
+            <div>
+              <div class="text-[10px] font-bold text-slate-500">MASA BERBAKI</div>
+              <div class="font-title font-black text-xl text-rose-600" id="bonus-timer-display">30s</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div>
+              <div class="text-[10px] font-bold text-slate-500 text-right">SYILING BONUS</div>
+              <div class="font-title font-black text-xl text-amber-600 text-right" id="bonus-score-display">+0 🪙</div>
+            </div>
+            <span class="text-2xl">💰</span>
+          </div>
+        </div>
+
+        <div id="bonus-quiz-body">
+          <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-200 mb-4">
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded-full">Soalan Pantas</span>
+            <h4 id="bonus-question-text" class="font-bold text-slate-800 text-sm md:text-base mt-2">
+              Soalan kilat sedang dijana...
+            </h4>
+          </div>
+          <div id="bonus-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <!-- Pilihan soalan pantas -->
+          </div>
+        </div>
+
+        <div id="bonus-gameover-body" class="hidden text-center py-4">
+          <div class="text-5xl mb-2">🎉</div>
+          <h4 class="font-title font-bold text-lg text-emerald-900">Masa Tamat! Hebat!</h4>
+          <p class="text-xs text-slate-600 mb-4" id="bonus-final-summary">Anda berjaya mengumpulkan syiling tambahan.</p>
+          <button onclick="showScreen('screen-levels')" class="btn-3d px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+            Kembali ke Pilihan Tahap
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: NOTA PEMBELAJARAN — AL-BAI‘ -->
+  <div id="modal-notes" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col border-4 border-teal-500 overflow-hidden">
+      
+      <!-- Pengepala Modal Nota -->
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-4 flex items-center justify-between border-b-2 border-amber-400">
+        <div class="flex items-center space-x-3">
+          <span class="text-3xl">📚</span>
+          <div>
+            <h3 class="font-title font-bold text-lg md:text-xl text-amber-200">NOTA PEMBELAJARAN — AL-BAI‘</h3>
+            <p class="text-xs text-teal-100">Pelajaran 1: Jual Beli • Muamalat Darjah 4 SAKNJ (Buku Teks ms 1-8)</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-notes')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center font-bold text-sm">
+          ✕
+        </button>
+      </div>
+
+      <!-- Tab Navigasi Nota (Responsif & Tatal Lembut) -->
+      <div class="bg-teal-50 border-b border-teal-200 px-3 py-2 flex space-x-2 overflow-x-auto text-xs font-bold no-scrollbar">
+        <button onclick="switchNoteTab('tab-pengertian')" id="btn-tab-pengertian" class="px-3 py-1.5 rounded-xl bg-teal-700 text-white transition flex-shrink-0">
+          1. Pengertian
+        </button>
+        <button onclick="switchNoteTab('tab-dalil')" id="btn-tab-dalil" class="px-3 py-1.5 rounded-xl bg-teal-100 text-teal-800 hover:bg-teal-200 transition flex-shrink-0">
+          2. Dalil Surah al-Baqarah
+        </button>
+        <button onclick="switchNoteTab('tab-rukun')" id="btn-tab-rukun" class="px-3 py-1.5 rounded-xl bg-teal-100 text-teal-800 hover:bg-teal-200 transition flex-shrink-0">
+          3. Tiga Rukun
+        </button>
+        <button onclick="switchNoteTab('tab-syarat')" id="btn-tab-syarat" class="px-3 py-1.5 rounded-xl bg-teal-100 text-teal-800 hover:bg-teal-200 transition flex-shrink-0">
+          4. Syarat-Syarat & Ijab Kabul
+        </button>
+        <button onclick="switchNoteTab('tab-hukum')" id="btn-tab-hukum" class="px-3 py-1.5 rounded-xl bg-teal-100 text-teal-800 hover:bg-teal-200 transition flex-shrink-0">
+          5. Lima Hukum
+        </button>
+      </div>
+
+      <!-- Kandungan Nota Mengikut Topik -->
+      <div class="p-4 md:p-6 overflow-y-auto flex-grow space-y-4 text-xs md:text-sm text-slate-700 leading-relaxed">
+        
+        <!-- Tab 1: Pengertian -->
+        <div id="tab-pengertian" class="note-tab-content space-y-3">
+          <div class="p-4 bg-emerald-50 rounded-2xl border-l-4 border-emerald-600">
+            <h4 class="font-title font-bold text-base text-emerald-900 mb-1">Pengertian Jual Beli dari Segi Bahasa</h4>
+            <p>Menukar sesuatu dengan sesuatu yang lain (menukar satu benda dengan benda yang lain).</p>
+          </div>
+          <div class="p-4 bg-amber-50 rounded-2xl border-l-4 border-amber-500">
+            <h4 class="font-title font-bold text-base text-amber-900 mb-1">Pengertian Jual Beli dari Segi Syarak</h4>
+            <p>Menukar harta dengan harta mengikut cara-cara yang tertentu berserta dengan ijab dan kabul yang sah menurut syariat Islam.</p>
+          </div>
+        </div>
+
+        <!-- Tab 2: Dalil -->
+        <div id="tab-dalil" class="note-tab-content hidden space-y-3">
+          <div class="p-5 bg-teal-50 rounded-2xl border-2 border-teal-200 text-center space-y-3">
+            <span class="text-xs font-bold bg-teal-200 text-teal-900 px-3 py-1 rounded-full">Firman Allah SWT dalam Surah al-Baqarah, Ayat 275:</span>
+            <p class="font-arabic text-2xl md:text-3xl text-emerald-950 font-bold leading-loose py-2">
+              وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا
+            </p>
+            <div class="text-left bg-white p-3 rounded-xl border border-teal-100">
+              <span class="font-bold text-teal-900">Maksud Dalil:</span>
+              <p class="mt-1 text-slate-700 italic">"Dan Allah telah menghalalkan jual beli dan mengharamkan riba."</p>
+            </div>
+            <p class="text-xs text-slate-500">Ayat ini merupakan dalil naqli utama yang menegaskan keharusan jual beli dan larangan mutlak terhadap amalan riba.</p>
+          </div>
+        </div>
+
+        <!-- Tab 3: Rukun -->
+        <div id="tab-rukun" class="note-tab-content hidden space-y-3">
+          <p class="font-semibold text-slate-800">Terdapat 3 rukun utama dalam urusan jual beli menurut syarak:</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3 bg-white border-2 border-emerald-300 rounded-xl shadow-sm">
+              <div class="font-arabic text-lg text-emerald-700 font-bold">١. العَاقِدَان</div>
+              <h5 class="font-bold text-slate-800 text-sm mt-1">1. Al-‘Aqidan</h5>
+              <p class="text-xs text-slate-600 mt-1">Dua pihak yang berakad iaitu <strong>Penjual (Al-Bā'i)</strong> dan <strong>Pembeli (Al-Mushtarī)</strong>.</p>
+            </div>
+            <div class="p-3 bg-white border-2 border-teal-300 rounded-xl shadow-sm">
+              <div class="font-arabic text-lg text-teal-700 font-bold">٢. المَعْقُود عَلَيْه</div>
+              <h5 class="font-bold text-slate-800 text-sm mt-1">2. Al-Ma‘qud ‘Alaih</h5>
+              <p class="text-xs text-slate-600 mt-1">Perkara yang diakadkan iaitu <strong>Barang Jualan (Al-Mabī')</strong> dan <strong>Harga (Al-Thaman)</strong>.</p>
+            </div>
+            <div class="p-3 bg-white border-2 border-amber-300 rounded-xl shadow-sm">
+              <div class="font-arabic text-lg text-amber-700 font-bold">٣. الصِّيغَة</div>
+              <h5 class="font-bold text-slate-800 text-sm mt-1">3. Al-Sighah</h5>
+              <p class="text-xs text-slate-600 mt-1">Ucapan akad iaitu <strong>Ijab</strong> (penawaran penjual) dan <strong>Kabul</strong> (penerimaan pembeli).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Syarat & 5 Syarat Ijab Kabul -->
+        <div id="tab-syarat" class="note-tab-content hidden space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+              <h5 class="font-bold text-emerald-900 text-sm mb-1">Syarat Penjual & Pembeli (Al-‘Aqidan):</h5>
+              <ul class="list-disc list-inside space-y-1 text-xs text-slate-700">
+                <li>Baligh (cukup umur).</li>
+                <li>Berakal waras.</li>
+                <li>Dengan kerelaan sendiri (bukan dipaksa).</li>
+                <li>Tidak terhalang mengurus harta (bukan pemboros/safih).</li>
+              </ul>
+            </div>
+            <div class="p-3 bg-teal-50 rounded-xl border border-teal-200">
+              <h5 class="font-bold text-teal-900 text-sm mb-1">Syarat Barang & Harga (Al-Ma‘qud ‘Alaih):</h5>
+              <ul class="list-disc list-inside space-y-1 text-xs text-slate-700">
+                <li>Suci daripada najis (bukan bangkai/arak/anjing/babi).</li>
+                <li>Bermanfaat mengikut hukum syarak.</li>
+                <li>Milik penuh penjual atau wakil yang sah.</li>
+                <li>Boleh diserahkan semasa akad (bukan burung liar di udara).</li>
+                <li>Diketahui jenis, kadar dan sifatnya secara jelas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 bg-amber-50 rounded-2xl border-2 border-amber-300">
+            <h5 class="font-bold text-amber-900 text-sm mb-2">5 Syarat Sah Ijab dan Kabul (Al-Sighah):</h5>
+            <ol class="list-decimal list-inside space-y-1.5 text-xs text-slate-800">
+              <li><strong>Kabul bertepatan dengan Ijab</strong> (cth: penawaran RM10 dipersetujui dengan bayaran RM10).</li>
+              <li><strong>Berturutan antara Ijab dan Kabul</strong> tanpa sela waktu yang lama atau diselangi perbualan lain.</li>
+              <li><strong>Bersambung dalam satu majlis akad</strong> (kedua-dua pihak berurusan dalam sesi akad yang sama).</li>
+              <li><strong>Tidak bertaklik</strong> (tidak digantungkan kepada syarat masa hadapan yang belum pasti).</li>
+              <li><strong>Tidak dihadkan dengan tempoh masa tertentu</strong> (pemilikan sah kekal, bukan bertempoh seperti sewaan).</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Tab 5: Hukum -->
+        <div id="tab-hukum" class="note-tab-content hidden space-y-3">
+          <p class="font-semibold text-slate-800">Hukum asal jual beli ialah <strong>HARUS</strong>. Walau bagaimanapun, hukumnya boleh berubah mengikut keadaan:</p>
+          <div class="space-y-2">
+            <div class="p-2.5 bg-emerald-50 rounded-xl border-l-4 border-emerald-500 flex items-center justify-between">
+              <div><strong>1. Harus:</strong> Hukum asal jual beli yang memenuhi rukun dan syarat syarak.</div>
+              <span class="text-xs bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-bold">Asal</span>
+            </div>
+            <div class="p-2.5 bg-blue-50 rounded-xl border-l-4 border-blue-500 flex items-center justify-between">
+              <div><strong>2. Wajib:</strong> Menjual makanan kepada orang yang kebuluran sekiranya tiada jalan lain untuk menyelamatkan nyawa.</div>
+              <span class="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded font-bold">Darurat</span>
+            </div>
+            <div class="p-2.5 bg-teal-50 rounded-xl border-l-4 border-teal-500 flex items-center justify-between">
+              <div><strong>3. Sunat:</strong> Menjual barang kepada orang yang memerlukan dengan niat kebajikan atau harga ihsan.</div>
+              <span class="text-xs bg-teal-200 text-teal-800 px-2 py-0.5 rounded font-bold">Kebajikan</span>
+            </div>
+            <div class="p-2.5 bg-amber-50 rounded-xl border-l-4 border-amber-500 flex items-center justify-between">
+              <div><strong>4. Makruh:</strong> Jual beli selepas azan pertama solat Jumaat bagi lelaki yang wajib solat.</div>
+              <span class="text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded font-bold">Dielakkan</span>
+            </div>
+            <div class="p-2.5 bg-rose-50 rounded-xl border-l-4 border-rose-500 flex items-center justify-between">
+              <div><strong>5. Haram:</strong> Jual beli barang najis/arak, riba, menipu timbangan, atau selepas azan kedua solat Jumaat.</div>
+              <span class="text-xs bg-rose-200 text-rose-800 px-2 py-0.5 rounded font-bold">Dilarang</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Kaki Modal Nota dengan Butang Lihat Nota Asal -->
+      <div class="bg-slate-100 p-3 px-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div class="text-[11px] text-slate-500 flex items-center space-x-1">
+          <span>📌</span>
+          <span>Rujukan: Kitab Muamalat Darjah 4 SAKNJ (Halaman 1 hingga 8).</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="openOriginalRefHelper()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 rounded-xl font-bold text-xs shadow flex items-center space-x-1">
+            <span>📄</span>
+            <span>LIHAT NOTA ASAL</span>
+          </button>
+          <button onclick="closeModal('modal-notes')" class="px-3.5 py-1.5 bg-slate-300 hover:bg-slate-400 text-slate-800 rounded-xl font-bold text-xs">
+            Tutup
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: MANUAL PENGGUNA TERBINA DALAM -->
+  <div id="modal-manual" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-4xl max-h-[92vh] rounded-3xl shadow-2xl flex flex-col border-4 border-amber-400 overflow-hidden">
+      
+      <div class="bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-700 text-white p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span class="text-3xl">📖</span>
+          <div>
+            <h3 class="font-title font-bold text-lg md:text-xl text-amber-100">MANUAL PENGGUNA TERBINA DALAM</h3>
+            <p class="text-xs text-amber-100/90">Al-Bai‘ — Muamalat Darjah 4 (Panduan Lengkap Murid & Guru)</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-manual')" class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 flex items-center justify-center font-bold text-sm">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto flex-grow space-y-5 text-xs md:text-sm text-slate-700 leading-relaxed">
+        
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">1</span>
+            Pengenalan
+          </h4>
+          <p class="mt-1">Aplikasi kuiz web interaktif <strong>"Al-Bai‘ — Muamalat Darjah 4"</strong> direka khas untuk murid Sekolah Agama Kerajaan Negeri Johor (SAKNJ) bagi mengulang kaji tajuk <em>Pelajaran 1: Jual Beli</em>. Bersama bimbingan Ustaz Faris, murid dapat menguji kefahaman merangkumi pengertian bahasa dan syarak, dalil Surah al-Baqarah ayat 275, tiga rukun jual beli, syarat sah dan 5 hukum muamalat.</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">2</span>
+            Cara Memulakan Kuiz
+          </h4>
+          <p class="mt-1">Pada skrin utama, tekan butang <strong>"MULA KUIZ"</strong> atau <strong>"PILIH TAHAP"</strong>. Aplikasi akan mengaktifkan enjin audio dan membawa murid terus ke menu pilihan tahap. Sebarang kemajuan yang telah dicapai sebelum ini disimpan secara automatik pada peranti anda.</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">3</span>
+            Cara Memilih Tahap
+          </h4>
+          <p class="mt-1">Menu mengandungi 5 kad tahap mengikut susunan silibus:
+            <br>• Tahap 1: Pengertian Jual Beli (Terbuka dari awal)
+            <br>• Tahap 2: Dalil Jual Beli
+            <br>• Tahap 3: Rukun Jual Beli
+            <br>• Tahap 4: Syarat Jual Beli & 5 Syarat Ijab Kabul
+            <br>• Tahap 5: Hukum Jual Beli & Ulang Kaji
+            <br>Tahap berikutnya akan dibuka secara berperingkat setelah tahap sebelumnya diselesaikan dengan jayanya.
+          </p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">4</span>
+            Cara Menjawab Soalan & Syarat Lulus 10/10
+          </h4>
+          <ul class="list-disc list-inside space-y-1 mt-1">
+            <li>Setiap tahap mengandungi <strong>10 soalan objektif</strong>.</li>
+            <li>Ketik pilihan jawapan A, B, C atau D. Sistem akan memberikan maklum balas warna hijau (betul) atau merah (salah).</li>
+            <li>Ulasan dan penerangan Ustaz Faris dipaparkan secara langsung untuk pembelajaran segera.</li>
+            <li><strong>Syarat Lulus 10/10:</strong> Murid mesti memperoleh markah penuh 10/10 untuk melengkapkan tahap dan membuka tahap berikutnya. Jika belum mencapai 10/10, butang <em>"Cuba Lagi"</em> disediakan tanpa had percubaan.</li>
+          </ul>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">5</span>
+            Syiling dan Lencana Pembelajaran
+          </h4>
+          <p class="mt-1">Setiap jawapan betul memberi ganjaran syiling pembelajaran. Kejayaan menyelesaikan tahap dengan 10/10 menganugerahkan lencana kecekapan (Pakar Takrif, Celik Dalil, Penjaga Rukun, Penilai Syarat, dan Mumtaz Muamalat). Selepas melengkapkan semua 5 tahap, skrin sijil kejayaan akhir akan dipaparkan.</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">6</span>
+            Cara Membuka Nota & Rujukan Asal
+          </h4>
+          <p class="mt-1">Buka bila-bila masa melalui butang <strong>"NOTA PEMBELAJARAN"</strong>. Nota disusun kemas mengikut 5 tab ringkas dengan tulisan Arab dan Rumi. Tekan butang <em>"LIHAT NOTA ASAL"</em> untuk menyemak senarai rujukan halaman Buku Teks Muamalat Darjah 4 (ms 1-8).</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">7</span>
+            Tetapan Audio & Muzik
+          </h4>
+          <p class="mt-1">Melalui ikon ⚙️ di bar atas atau skrin utama, anda boleh menghidupkan atau mematikan muzik latar instrumental Arab (BGM) dan kesan bunyi (SFX) serta melaraskan kelantangan audio.</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">8</span>
+            Simpanan Kemajuan & Set Semula
+          </h4>
+          <p class="mt-1">Aplikasi menggunakan <code>localStorage</code> peranti secara automatik. Data tahap, markah dan syiling kekal selagi menggunakan peranti yang sama. Butang <em>"Set Semula Kemajuan"</em> dalam menu tetapan membolehkan guru atau murid memulakan kuiz semula dari awal.</p>
+        </section>
+
+        <section class="border-b border-slate-200 pb-4">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">9</span>
+            Panduan Guru (PdP di Bilik Darjah)
+          </h4>
+          <p class="mt-1">Guru boleh menggunakan aplikasi ini untuk:
+            <br>• <strong>Set Induksi / Pengukuhan:</strong> Membuka kuiz secara individu atau paparan projektor.
+            <br>• <strong>Penilaian Formatif:</strong> Menyemak lencana dan markah 10/10 pada peranti murid sebagai bukti penguasaan standard pembelajaran Pelajaran 1 (Jual Beli).
+          </p>
+        </section>
+
+        <section class="pb-2">
+          <h4 class="font-title font-bold text-emerald-800 text-base flex items-center">
+            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mr-2 text-xs">10</span>
+            Penyelesaian Masalah (Troubleshooting)
+          </h4>
+          <div class="space-y-1.5 mt-1">
+            <p>• <strong>Butang audio tidak berbunyi:</strong> Klik mana-mana butang pada skrin untuk membenarkan kebenaran audio pelayar web.</p>
+            <p>• <strong>Paparan terpotong di telefon:</strong> Putar skrin atau tatal dengan jari; reka bentuk telah dioptimumkan secara responsif.</p>
+            <p>• <strong>Kemajuan tidak tersimpan:</strong> Pastikan anda tidak menggunakan mod 'Incognito / Private' yang menyekat simpanan peranti.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="bg-slate-100 p-3 px-4 border-t border-slate-200 text-right">
+        <button onclick="closeModal('modal-manual')" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs shadow">
+          Faham, Tutup Manual
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: TETAPAN AUDIO -->
+  <div id="modal-settings" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 border-4 border-emerald-500">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">⚙️</span>
+          <h3 class="font-title font-bold text-lg text-emerald-900">Tetapan Audio & Sistem</h3>
+        </div>
+        <button onclick="closeModal('modal-settings')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-xs">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs md:text-sm">
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+          <div>
+            <div class="font-bold text-slate-800">Muzik Latar (Instrumental Arab)</div>
+            <div class="text-[11px] text-slate-500">Melodi lembut gambus</div>
+          </div>
+          <button id="toggle-bgm" onclick="toggleBgmSetting()" class="px-4 py-1.5 rounded-full font-bold text-xs bg-emerald-600 text-white transition">
+            HIDUP
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+          <div>
+            <div class="font-bold text-slate-800">Kesan Bunyi (SFX)</div>
+            <div class="text-[11px] text-slate-500">Bunyi klik, jawapan & syiling</div>
+          </div>
+          <button id="toggle-sfx" onclick="toggleSfxSetting()" class="px-4 py-1.5 rounded-full font-bold text-xs bg-emerald-600 text-white transition">
+            HIDUP
+          </button>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-2xl space-y-1.5">
+          <div class="flex justify-between font-bold text-slate-700">
+            <span>Kelantangan Bunyi</span>
+            <span id="volume-label">70%</span>
+          </div>
+          <input type="range" id="volume-slider" min="0" max="100" value="70" oninput="changeVolumeSetting(this.value)" class="w-full accent-emerald-600">
+        </div>
+
+        <div class="pt-3 border-t border-slate-200">
+          <button onclick="requestResetGame()" class="w-full py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl font-bold text-xs transition flex items-center justify-center space-x-1">
+            <span>🗑️</span>
+            <span>Set Semula Kemajuan (Mula Semula)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PENGESAHAN SET SEMULA KEMAJUAN -->
+  <div id="modal-confirm-reset" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center border-4 border-rose-500">
+      <div class="w-14 h-14 mx-auto rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mb-3">
+        ⚠️
+      </div>
+      <h3 class="font-title font-bold text-lg text-slate-900">Set Semula Kemajuan?</h3>
+      <p class="text-xs text-slate-600 mt-2">
+        Tindakan ini akan memadam semua syiling, lencana dan membuka semula tahap dari Tahap 1 pada peranti ini.
+      </p>
+      <div class="flex items-center space-x-2 mt-5">
+        <button onclick="closeModal('modal-confirm-reset')" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold text-xs">
+          Batal
+        </button>
+        <button onclick="executeResetGame()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs shadow">
+          Ya, Set Semula!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PANDUAN NOTA ASAL BUKU TEKS -->
+  <div id="modal-original-ref" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 border-4 border-amber-400">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">📑</span>
+          <h3 class="font-title font-bold text-base text-amber-900">Panduan Halaman Rujukan Asal</h3>
+        </div>
+        <button onclick="closeModal('modal-original-ref')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-xs">
+          ✕
+        </button>
+      </div>
+      <div class="space-y-2.5 text-xs text-slate-700 leading-relaxed">
+        <p>Kuiz ini dibina berasaskan sukatan rasmi <strong>Kitab Muamalat Darjah 4 (SAKNJ)</strong> bagi Pelajaran 1 (Jual Beli):</p>
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-1.5">
+          <ul class="list-disc list-inside space-y-1 text-slate-700">
+            <li><strong>Halaman 1-2:</strong> Pengertian Jual Beli (Bahasa & Syarak).</li>
+            <li><strong>Halaman 2-3:</strong> Dalil Surah al-Baqarah: 275 & Terjemahan Lengkap.</li>
+            <li><strong>Halaman 3-5:</strong> Tiga Rukun Jual Beli (Al-‘Aqidan, Al-Ma‘qud ‘Alaih, Al-Sighah).</li>
+            <li><strong>Halaman 5-7:</strong> Syarat Aqidan, Syarat Barang & 5 Syarat Sah Ijab Kabul.</li>
+            <li><strong>Halaman 7-8:</strong> Pembahagian Lima Hukum Jual Beli (Harus, Wajib, Sunat, Makruh, Haram).</li>
+          </ul>
+        </div>
+        <p class="text-[11px] text-slate-500 italic">
+          *Semua soalan dan pilihan jawapan berpegang teguh pada teks asal kurikulum tanpa sebarang perubahan maksud syarak.
+        </p>
+      </div>
+      <div class="mt-4 text-right">
+        <button onclick="closeModal('modal-original-ref')" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-bold text-xs shadow">
+          Tutup Panduan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. MODAL: PANEL PILIHAN KAEDAH MENJAWAB (PILIH CARA MENJAWAB) -->
+  <div id="modal-choose-mode" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl p-5 md:p-7 border-4 border-amber-400 relative">
+      <div class="text-center mb-5">
+        <div class="inline-flex p-3 bg-amber-100 rounded-2xl mb-2 text-3xl shadow-sm">
+          🎮
+        </div>
+        <h3 class="font-title font-black text-2xl text-emerald-900">
+          Pilih Cara Menjawab
+        </h3>
+        <p class="text-xs md:text-sm text-slate-600 mt-1">
+          Bagaimanakah kamu mahu menjawab soalan hari ini?
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        <!-- Pilihan A: Tekan Jawapan -->
+        <div class="border-2 border-emerald-400 bg-emerald-50/50 hover:bg-emerald-50 rounded-2xl p-4 flex flex-col justify-between text-center transition hover:shadow-md group">
+          <div>
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center text-3xl mb-3 shadow-inner group-hover:scale-105 transition">
+              👆
+            </div>
+            <h4 class="font-title font-bold text-base text-emerald-900">A. Tekan Jawapan</h4>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Pilih jawapan dengan menekan butang teks A, B, C atau D pada skrin seperti biasa.
+            </p>
+          </div>
+          <button onclick="confirmChooseMode('touch')" class="btn-3d mt-4 w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+            Pilih Tekan Jawapan
+          </button>
+        </div>
+
+        <!-- Pilihan B: Mod Isyarat Jari (Tanpa Kamera) -->
+        <div class="border-2 border-amber-400 bg-amber-50/50 hover:bg-amber-50 rounded-2xl p-4 flex flex-col justify-between text-center transition hover:shadow-md group">
+          <div>
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center text-3xl mb-3 shadow-inner group-hover:scale-105 transition">
+              🖐️
+            </div>
+            <h4 class="font-title font-bold text-base text-amber-900">B. Mod Isyarat Jari Sebenar</h4>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Tunjukkan 1, 2, 3 atau 4 jari di hadapan kamera. <strong>Tiada paparan video dipaparkan pada skrin!</strong> Tahan 1 saat untuk menghantar secara automatik.
+            </p>
+          </div>
+          <button onclick="confirmChooseMode('gesture')" class="btn-3d mt-4 w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs rounded-xl shadow">
+            Pilih Isyarat Jari Sebenar
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-[11px] text-slate-500">
+        <span>💡 Boleh ditukar pada bila-bila masa semasa menjawab kuiz.</span>
+        <button onclick="closeModal('modal-choose-mode')" class="text-slate-400 hover:text-slate-700 font-bold underline">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL: MANUAL RINGKAS MURID (“Jom Jawab Dengan Isyarat Jari!”) -->
+  <div id="modal-gesture-guide" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl p-5 md:p-6 border-4 border-amber-400 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="text-3xl">🖐️</span>
+          <div>
+            <h3 class="font-title font-black text-lg md:text-xl text-amber-900">Jom Jawab Dengan Isyarat Jari Sebenar!</h3>
+            <p class="text-[11px] text-slate-500">Panduan menjawab menggunakan kamera di latar belakang tanpa paparan video</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-gesture-guide')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-xs">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-700 leading-relaxed">
+        
+        <!-- Ilustrasi 4 Simbol Jari -->
+        <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200">
+          <div class="font-bold text-emerald-900 text-xs mb-2.5 text-center">
+            Pemetaan Bilangan Jari yang Mewakili Jawapan:
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div class="p-2.5 bg-white rounded-xl border-2 border-emerald-300 shadow-sm flex flex-col items-center">
+              <span class="text-3xl mb-1">☝️</span>
+              <span class="font-bold text-xs text-emerald-900">1 Jari Terangkat</span>
+              <span class="text-[11px] font-black text-white bg-emerald-600 px-2 py-0.5 rounded-full mt-1">Jawapan A</span>
+            </div>
+
+            <div class="p-2.5 bg-white rounded-xl border-2 border-emerald-300 shadow-sm flex flex-col items-center">
+              <span class="text-3xl mb-1">✌️</span>
+              <span class="font-bold text-xs text-emerald-900">2 Jari Terangkat</span>
+              <span class="text-[11px] font-black text-white bg-emerald-600 px-2 py-0.5 rounded-full mt-1">Jawapan B</span>
+            </div>
+
+            <div class="p-2.5 bg-white rounded-xl border-2 border-emerald-300 shadow-sm flex flex-col items-center">
+              <span class="text-3xl mb-1">🤟</span>
+              <span class="font-bold text-xs text-emerald-900">3 Jari Terangkat</span>
+              <span class="text-[11px] font-black text-white bg-emerald-600 px-2 py-0.5 rounded-full mt-1">Jawapan C</span>
+            </div>
+
+            <div class="p-2.5 bg-white rounded-xl border-2 border-emerald-300 shadow-sm flex flex-col items-center">
+              <span class="text-3xl mb-1">🖖</span>
+              <span class="font-bold text-xs text-emerald-900">4 Jari Terangkat</span>
+              <span class="text-[11px] font-black text-white bg-emerald-600 px-2 py-0.5 rounded-full mt-1">Jawapan D</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Langkah Mudah -->
+        <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200">
+          <div class="font-bold text-amber-950 text-xs mb-2">📋 5 Langkah Mudah Menjawab:</div>
+          <ol class="list-decimal list-inside space-y-1.5 text-[11px] text-slate-800">
+            <li><strong>Benarkan akses kamera</strong> apabila pelayar meminta kebenaran (kamera hanya berfungsi di latar belakang tanpa video).</li>
+            <li><strong>Lihat soalan</strong> yang dipaparkan oleh Ustaz Faris.</li>
+            <li><strong>Angkat bilangan jari</strong> (1=A, 2=B, 3=C, 4=D) di hadapan kamera peranti.</li>
+            <li><strong>Tahan isyarat secara stabil selama 1 saat</strong> sehingga bilah kestabilan penuh 100%.</li>
+            <li><strong>Jawapan dihantar secara automatik</strong> sekali sahaja tanpa perlu menekan sebarang butang pengesahan tambahan.</li>
+          </ol>
+        </div>
+
+        <div class="p-2.5 bg-emerald-100/70 rounded-xl text-emerald-950 text-[11px] flex items-center space-x-2">
+          <span class="text-base">🛡️</span>
+          <span><strong>Keselamatan & Fokus:</strong> Video kamera disembunyikan sepenuhnya agar murid kekal fokus kepada soalan, dan tiada imej yang dirakam atau dimuat naik.</span>
+        </div>
+      </div>
+
+      <div class="mt-5 flex items-center justify-between gap-2 pt-3 border-t border-slate-200">
+        <button onclick="closeModal('modal-gesture-guide')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs">
+          Lihat Panduan Lagi
+        </button>
+        <button onclick="confirmStartFromGuide()" class="btn-3d px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow flex items-center space-x-1">
+          <span>🚀</span>
+          <span>Faham, Mulakan Kuiz</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. ENJIN AUDIO SINTESIS WEB AUDIO API
+       ========================================================================== */
+    class AlBaiAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.bgmPlaying = false;
+        this.bgmInterval = null;
+        this.musicEnabled = true;
+        this.sfxEnabled = true;
+        this.masterVolume = 0.7;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.2, gainValue = 0.2) {
+        if (!this.sfxEnabled) return;
+        this.init();
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(gainValue * this.masterVolume, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.debug("Audio playTone error", e);
+        }
+      }
+
+      playClick() {
+        this.playTone(520, 'triangle', 0.08, 0.2);
+      }
+
+      playCorrect() {
+        if (!this.sfxEnabled) return;
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            this.playTone(freq, 'sine', 0.25, 0.25);
+          }, idx * 75);
+        });
+      }
+
+      playWrong() {
+        if (!this.sfxEnabled) return;
+        this.init();
+        this.playTone(260, 'sawtooth', 0.2, 0.15);
+        setTimeout(() => this.playTone(220, 'sawtooth', 0.3, 0.15), 120);
+      }
+
+      playCoin() {
+        if (!this.sfxEnabled) return;
+        this.init();
+        this.playTone(987.77, 'sine', 0.1, 0.25);
+        setTimeout(() => this.playTone(1318.51, 'triangle', 0.2, 0.25), 80);
+      }
+
+      playBadge() {
+        if (!this.sfxEnabled) return;
+        this.init();
+        const fanfares = [440, 554.37, 659.25, 880];
+        fanfares.forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.35, 0.3), i * 110);
+        });
+      }
+
+      playLevelComplete() {
+        if (!this.sfxEnabled) return;
+        this.init();
+        const mel = [523, 659, 783, 1046, 1318];
+        mel.forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'sine', 0.4, 0.3), i * 120);
+        });
+      }
+
+      startBgm() {
+        if (!this.musicEnabled || this.bgmPlaying) return;
+        this.init();
+        this.bgmPlaying = true;
+        const scale = [293.66, 311.13, 369.99, 392.00, 440.00, 466.16, 523.25];
+        let step = 0;
+
+        const loopMusic = () => {
+          if (!this.bgmPlaying || !this.musicEnabled) return;
+          try {
+            const noteFreq = scale[step % scale.length];
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(noteFreq, this.ctx.currentTime);
+
+            const vol = 0.04 * this.masterVolume;
+            gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.35);
+
+            step = (step + (Math.random() > 0.4 ? 1 : 2)) % scale.length;
+          } catch (e) {
+            console.debug("BGM tick error", e);
+          }
+        };
+
+        this.bgmInterval = setInterval(loopMusic, 420);
+      }
+
+      stopBgm() {
+        this.bgmPlaying = false;
+        if (this.bgmInterval) {
+          clearInterval(this.bgmInterval);
+          this.bgmInterval = null;
+        }
+      }
+
+      setMasterVolume(val) {
+        this.masterVolume = Math.max(0, Math.min(1, val));
+      }
+    }
+
+    const soundManager = new AlBaiAudioEngine();
+
+    /* ==========================================================================
+       2. BANK 50 SOALAN LENGKAP BERSAMA USTAZ FARIS (10 SOALAN SETIAP TAHAP)
+       ========================================================================== */
+    const QUESTION_BANK = {
+      // TAHAP 1: PENGERTIAN JUAL BELI
+      1: [
+        {
+          scenario: 'Ustaz Faris menguji kefahaman takrif asas jual beli dalam bahasa Melayu.',
+          q: 'Apakah pengertian jual beli dari segi BAHASA?',
+          options: [
+            'Menukar sesuatu dengan sesuatu yang lain',
+            'Memberi pinjam wang tanpa faedah',
+            'Menyerahkan hadiah tanpa balasan',
+            'Mengambil barang tanpa bayaran'
+          ],
+          correct: 0,
+          explanation: 'Dari segi bahasa, jual beli bermaksud menukar sesuatu benda dengan sesuatu benda yang lain.'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan takrif mengikut istilah hukum Islam.',
+          q: 'Apakah pengertian jual beli dari segi SYARAK?',
+          options: [
+            'Mengambil barang orang lain secara paksa',
+            'Menukar harta dengan harta mengikut cara tertentu berserta ijab dan kabul',
+            'Menyimpan barang di rumah sehingga harga naik',
+            'Memberikan sedekah kepada fakir miskin'
+          ],
+          correct: 1,
+          explanation: 'Dari segi syarak, jual beli ialah menukar harta dengan harta mengikut cara-cara yang tertentu berserta ijab dan kabul yang sah.'
+        },
+        {
+          scenario: 'Ustaz Faris menekankan rukun ucapan dalam akad pertukaran.',
+          q: 'Dalam pengertian syarak, apakah unsur utama yang mesti ada dalam proses pertukaran harta?',
+          options: [
+            'Ijab dan kabul yang sah menurut syarak',
+            'Perjanjian bertulis di mahkamah sivil',
+            'Kehadiran dua orang saksi berjawatan tinggi',
+            'Bayaran cukai barangan mewah'
+          ],
+          correct: 0,
+          explanation: 'Pertukaran harta dalam Islam mestilah mengikut kaedah tertentu berserta ucapan akad ijab dan kabul.'
+        },
+        {
+          scenario: 'Ustaz Faris memberikan contoh dua orang menukar buah epal dengan buah oren.',
+          q: 'Perbuatan menukar barang dengan barang menepati takrif jual beli dari segi apa?',
+          options: [
+            'Dari segi adat resam semata-mata',
+            'Dari segi undang-undang antarabangsa',
+            'Dari segi bahasa',
+            'Dari segi paksaan'
+          ],
+          correct: 2,
+          explanation: 'Menukar sesuatu dengan sesuatu yang lain secara umum adalah pengertian jual beli dari sudut bahasa.'
+        },
+        {
+          scenario: 'Ustaz Faris bertanya istilah bahasa Arab bagi bab Jual Beli.',
+          q: 'Apakah perkataan bahasa Arab bagi istilah jual beli?',
+          options: [
+            'Al-Nikah (النِّكَاح)',
+            'Al-Bay‘u (البَيْع)',
+            'Al-Waqfu (الوَقْف)',
+            'Al-Hibah (الهِبَة)'
+          ],
+          correct: 1,
+          explanation: 'Istilah bahasa Arab bagi jual beli ialah Al-Bay‘u (الْبَيْعُ).'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan sebab pertukaran tanpa akad tidak menepati syarak.',
+          q: 'Mengapakah pertukaran barang tanpa cara syarak dan tanpa akad tidak dikira jual beli yang sah?',
+          options: [
+            'Kerana syarat sah jual beli syarak mensyaratkan tatacara tertentu dan ijab kabul',
+            'Kerana barang tersebut terlalu murah',
+            'Kerana tiada resit bercetak mesin',
+            'Kerana penjual tidak memakai pakaian seragam'
+          ],
+          correct: 0,
+          explanation: 'Syariat Islam menetapkan tatacara khusus serta ijab dan kabul bagi memastikan wujud keredaan kedua-dua pihak.'
+        },
+        {
+          scenario: 'Ustaz Faris menghuraikan maksud kalimah "Harta dengan Harta".',
+          q: 'Dalam takrif syarak "menukar harta dengan harta", apakah yang dimaksudkan dengan harta?',
+          options: [
+            'Hanya emas dan permata sahaja',
+            'Sesuatu yang bernilai dan boleh dimiliki mengikut syarak (termasuk wang dan barang)',
+            'Semua benda termasuk najis dan arak',
+            'Sesuatu yang tidak boleh disentuh'
+          ],
+          correct: 1,
+          explanation: 'Harta ialah segala sesuatu yang bernilai, halal dan boleh dimanfaatkan menurut neraca syariat Islam.'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan hikmah pensyariatan jual beli kepada manusia.',
+          q: 'Apakah tujuan utama syariat Islam mengadakan hukum jual beli bagi manusia?',
+          options: [
+            'Untuk mengumpulkan kekayaan peribadi sebanyak mungkin',
+            'Memudahkan manusia memenuhi keperluan hidup harian secara adil dan reda',
+            'Menghapuskan golongan orang miskin dengan paksa',
+            'Menyekat orang ramai daripada bermusafir'
+          ],
+          correct: 1,
+          explanation: 'Jual beli disyariatkan bagi memudahkan manusia saling bertukar barangan keperluan hidup dalam suasana aman dan diredai Allah.'
+        },
+        {
+          scenario: 'Ustaz Faris meminta rumusan takrif syarak daripada buku teks.',
+          q: 'Antara berikut, manakah ringkasan PALING TEPAT bagi pengertian jual beli dari segi syarak?',
+          options: [
+            'Memberi makanan secara percuma',
+            'Menukar harta dengan harta mengikut cara tertentu berserta ijab dan kabul',
+            'Meminjamkan barang dengan syarat dipulangkan berganda',
+            'Menukar barang yang tidak halal dengan wang'
+          ],
+          correct: 1,
+          explanation: 'Definisi rasmi sukatan SAKNJ: Menukar harta dengan harta mengikut cara-cara yang tertentu berserta ijab dan kabul.'
+        },
+        {
+          scenario: 'Ustaz Faris menguji perbezaan jual beli dengan pemberian sukarela.',
+          q: 'Adakah sedekah dan hadiah tergolong dalam maksud jual beli dari segi syarak?',
+          options: [
+            'Ya, kerana berlaku pemindahan barang',
+            'Tidak, kerana sedekah dan hadiah adalah pemberian tanpa balasan tukaran harta',
+            'Ya, sekiranya nilainya melebihi RM100',
+            'Tidak, melainkan jika diberi resit rasmi'
+          ],
+          correct: 1,
+          explanation: 'Sedekah dan hadiah bukan jual beli kerana ia merupakan pemberian sukarela tanpa tukaran harta timbal balik.'
+        }
+      ],
+
+      // TAHAP 2: DALIL JUAL BELI (SURAH AL-BAQARAH AYAT 275)
+      2: [
+        {
+          arabicText: 'وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا',
+          arabicSub: 'Surah al-Baqarah: Ayat 275',
+          scenario: 'Ustaz Faris memperdengarkan potongan ayat al-Quran surah al-Baqarah ayat 275.',
+          q: 'Apakah maksud kalimah "وَأَحَلَّ اللَّهُ الْبَيْعَ" dalam ayat di atas?',
+          options: [
+            'Dan Allah telah mengharamkan jual beli',
+            'Dan Allah telah menghalalkan jual beli',
+            'Dan manusia menyukai jual beli',
+            'Dan para nabi berniaga kurma'
+          ],
+          correct: 1,
+          explanation: '"Wa ahallallāhul-bai\'a" bererti: Dan Allah telah menghalalkan jual beli.'
+        },
+        {
+          arabicText: 'وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا',
+          arabicSub: 'Surah al-Baqarah: Ayat 275',
+          scenario: 'Ustaz Faris menerangkan larangan tegas pada hujung ayat.',
+          q: 'Apakah maksud kalimah "وَحَرَّمَ الرِّبَا" dalam ayat tersebut?',
+          options: [
+            'Dan mengharamkan riba',
+            'Dan menggalakkan keuntungan berganda',
+            'Dan mewajibkan pinjaman bersyarat',
+            'Dan memaafkan peniaga yang menipu'
+          ],
+          correct: 0,
+          explanation: '"Wa harramar-ribā" bermaksud: Dan (Allah) telah mengharamkan riba.'
+        },
+        {
+          scenario: 'Ustaz Faris bertanya surah dan nombor ayat bagi dalil jual beli.',
+          q: 'Dalil pensyariatan jual beli diambil daripada surah apakah dalam al-Quran?',
+          options: [
+            'Surah al-Fatihah ayat 1',
+            'Surah al-Baqarah ayat 275',
+            'Surah al-Ikhlas ayat 3',
+            'Surah an-Nas ayat 4'
+          ],
+          correct: 1,
+          explanation: 'Dalil naqli utama pensyariatan jual beli termaktub dalam Surah al-Baqarah ayat 275.'
+        },
+        {
+          scenario: 'Ustaz Faris mengaitkan ayat al-Quran dengan hukum asal.',
+          q: 'Apakah hukum asal jual beli berdasarkan ayat "وَأَحَلَّ اللَّهُ الْبَيْعَ"?',
+          options: [
+            'Haram pada bila-bila masa',
+            'Harus (halal dan dibenarkan)',
+            'Makruh yang sangat dibenci',
+            'Wajib membeli semua barang di kedai'
+          ],
+          correct: 1,
+          explanation: 'Ayat ini membuktikan bahawa hukum asal urusan jual beli adalah harus dan halal di sisi syarak.'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan keburukan penindasan faedah pinjaman.',
+          q: 'Berdasarkan ayat 275 Surah al-Baqarah, apakah amalan yang diharamkan bersama pensyariatan jual beli?',
+          options: [
+            'Sedekah jariah',
+            'Amalan riba',
+            'Menimbang kurma dengan adil',
+            'Memberi potongan harga'
+          ],
+          correct: 1,
+          explanation: 'Allah menghalalkan jual beli yang adil tetapi mengharamkan riba yang mengandungi kezaliman dan penindasan.'
+        },
+        {
+          arabicText: 'وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا',
+          arabicSub: 'Surah al-Baqarah: Ayat 275',
+          scenario: 'Ustaz Faris menguji ingatan murid terhadap terjemahan ayat lengkap.',
+          q: 'Apakah terjemahan LENGKAP bagi ayat 275 Surah al-Baqarah tersebut?',
+          options: [
+            'Dan Allah telah mewajibkan sedekah dan mengharamkan meminta-minta',
+            'Dan Allah telah menghalalkan jual beli dan mengharamkan riba',
+            'Dan Allah telah melarang berniaga pada musim haji',
+            'Dan Allah telah mengampuni pedagang yang jujur'
+          ],
+          correct: 1,
+          explanation: 'Terjemahan lengkap ayat: "Dan Allah telah menghalalkan jual beli dan mengharamkan riba."'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan kekeliruan orang musyrikin pada zaman dahulu.',
+          q: 'Mengapakah orang kafir Quraisy pada zaman dahulu tersilap menganggap jual beli sama seperti riba?',
+          options: [
+            'Kerana kedua-duanya mendatangkan pertambahan harta, namun mereka tidak mempedulikan kezaliman faedah riba',
+            'Kerana mereka tidak tahu menggunakan mata wang dinar',
+            'Kerana kedai dibuka pada waktu malam',
+            'Kerana barang jualan tiada tanda harga'
+          ],
+          correct: 0,
+          explanation: 'Kaum musyrikin mendakwa jual beli sama seperti riba, lalu Allah menegaskan bahawa jual beli dihalalkan manakala riba diharamkan.'
+        },
+        {
+          scenario: 'Ustaz Faris membimbing adab seorang muslim dalam berniaga.',
+          q: 'Seorang peniaga Muslim yang beramal dengan ayat ini akan sentiasa memastikan perniagaannya...',
+          options: [
+            'Bebas daripada unsur riba, penipuan dan penindasan',
+            'Mengenakan kadar faedah tinggi kepada orang susah',
+            'Menyorokkan barangan makanan musim banjir',
+            'Mengurangkan timbangan sedikit demi sedikit'
+          ],
+          correct: 0,
+          explanation: 'Peniaga Muslim menjauhi riba dan tipu daya agar hasil usahanya halal dan diberkati Allah.'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan jenis sumber dalil dalam ilmu syariah.',
+          q: 'Ayat 275 Surah al-Baqarah ini tergolong sebagai dalil apa dalam ilmu usul muamalat?',
+          options: [
+            'Dalil Akal semata-mata',
+            'Dalil Naqli (bersumberkan wahyu al-Quran)',
+            'Dalil Adat resam Melayu',
+            'Dalil Undang-undang jalan raya'
+          ],
+          correct: 1,
+          explanation: 'Ayat al-Quran ialah dalil naqli iaitu dalil wahyu yang menjadi hujah tertinggi dalam hukum Islam.'
+        },
+        {
+          scenario: 'Ustaz Faris menguji kata kerja Arab yang bermaksud "menghalalkan".',
+          q: 'Apakah kalimah bahasa Arab dalam ayat tersebut yang menunjukkan perbuatan "menghalalkan"?',
+          options: [
+            'حَرَّمَ (Harrama)',
+            'أَحَلَّ (Ahalla)',
+            'الرِّبَا (Ar-Ribā)',
+            'البَيْعَ (Al-Bai‘a)'
+          ],
+          correct: 1,
+          explanation: 'Kalimah "أَحَلَّ" (ahalla) bererti telah menghalalkan.'
+        }
+      ],
+
+      // TAHAP 3: TIGA RUKUN JUAL BELI
+      3: [
+        {
+          scenario: 'Ustaz Faris memulakan pembelajaran mengenai rukun-rukun sah jual beli.',
+          q: 'Berapakah bilangan rukun jual beli yang dinyatakan dalam sukatan Muamalat Darjah 4?',
+          options: [
+            '2 rukun sahaja',
+            '3 rukun utama',
+            '5 rukun',
+            '7 rukun'
+          ],
+          correct: 1,
+          explanation: 'Rukun jual beli terbahagi kepada 3 rukun utama: Al-‘Aqidan, Al-Ma‘qud ‘Alaih, dan Al-Sighah.'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan rukun pertama dalam bahasa Arab.',
+          q: 'Apakah yang dimaksudkan dengan rukun pertama iaitu "Al-‘Aqidan" (العَاقِدَان)?',
+          options: [
+            'Dua pihak yang berakad iaitu Penjual dan Pembeli',
+            'Dua jenis mata wang emas dan perak',
+            'Dua ekor kambing ternakan',
+            'Dua orang saksi nikah'
+          ],
+          correct: 0,
+          explanation: 'Al-‘Aqidan bererti dua orang yang melakukan akad iaitu penjual dan pembeli.'
+        },
+        {
+          scenario: 'Ustaz Faris bertanya istilah bahasa Arab bagi pihak penjual.',
+          q: 'Dalam rukun Al-‘Aqidan, apakah gelaran Arab bagi "Penjual"?',
+          options: [
+            'Al-Mushtarī (المُشْتَرِي)',
+            'Al-Bā‘i (البَائِع)',
+            'Al-Thaman (الثَّمَن)',
+            'Al-Sighah (الصِّيغَة)'
+          ],
+          correct: 1,
+          explanation: 'Penjual disebut Al-Bā‘i (البَائِعُ), manakala pembeli disebut Al-Mushtarī (المُشْتَرِي).'
+        },
+        {
+          scenario: 'Ustaz Faris memberikan situasi seorang murid membeli buku tulis di kedai.',
+          q: 'Murid yang menyerahkan wang untuk membeli buku memegang peranan sebagai apa menurut rukun jual beli?',
+          options: [
+            'Al-Bā‘i (Penjual)',
+            'Al-Mushtarī (Pembeli)',
+            'Al-Mabī‘ (Barang jualan)',
+            'Al-Thaman (Harga)'
+          ],
+          correct: 1,
+          explanation: 'Pihak yang membeli barang bertindak sebagai pembeli (Al-Mushtarī).'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan rukun kedua iaitu perkara yang diakadkan.',
+          q: 'Apakah yang dimaksudkan dengan rukun kedua iaitu "Al-Ma‘qud ‘Alaih" (المَعْقُود عَلَيْه)?',
+          options: [
+            'Tempat letak kenderaan',
+            'Perkara yang diakadkan iaitu Barang Jualan dan Harga',
+            'Sumpah peniaga di hadapan qadi',
+            'Waktu siang dan malam berniaga'
+          ],
+          correct: 1,
+          explanation: 'Al-Ma‘qud ‘Alaih merujuk kepada barang yang dijual (Al-Mabī‘) dan harga bayarannya (Al-Thaman).'
+        },
+        {
+          scenario: 'Ustaz Faris menunjukkan sebungkus beras yang sedang dijual.',
+          q: 'Beras tersebut dipanggil sebagai apa dalam rukun Al-Ma‘qud ‘Alaih?',
+          options: [
+            'Al-Thaman (Harga)',
+            'Al-Mabī‘ (Barang yang dijual)',
+            'Al-Sighah (Akad)',
+            'Al-Bā‘i (Penjual)'
+          ],
+          correct: 1,
+          explanation: 'Barang yang dijual dinamakan Al-Mabī‘ (المَبِيعُ).'
+        },
+        {
+          scenario: 'Ustaz Faris menunjukkan wang kertas RM10 yang dibayar untuk membeli barang.',
+          q: 'Wang bayaran RM10 itu dinamakan sebagai apa dalam istilah muamalat?',
+          options: [
+            'Al-Thaman (الثَّمَن) / Harga',
+            'Al-Mabī‘ (Barang)',
+            'Al-Ijab (Penawaran)',
+            'Al-Kabul (Penerimaan)'
+          ],
+          correct: 0,
+          explanation: 'Harga atau nilai bayaran yang dipersetujui dinamakan Al-Thaman (الثَّمَنُ).'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan rukun ketiga iaitu Al-Sighah.',
+          q: 'Apakah yang dimaksudkan dengan rukun ketiga iaitu "Al-Sighah" (الصِّيغَة)?',
+          options: [
+            'Resit pembayaran bercetak',
+            'Ucapan akad yang mengandungi Ijab dan Kabul',
+            'Timbang tara di mahkamah',
+            'Pemberian diskaun perayaan'
+          ],
+          correct: 1,
+          explanation: 'Al-Sighah ialah lafaz akad pertukaran yang terdiri daripada Ijab dan Kabul.'
+        },
+        {
+          scenario: 'Ustaz Faris memberikan contoh ucapan penjual: "Saya jual pen ini dengan harga RM2."',
+          q: 'Ucapan penawaran oleh pihak penjual ini dikenali sebagai apa dalam rukun Sighah?',
+          options: [
+            'Kabul (Penerimaan)',
+            'Ijab (Penawaran)',
+            'Riba (Bunga)',
+            'Kiar (Pilihan)'
+          ],
+          correct: 1,
+          explanation: 'Lafaz penawaran daripada pihak penjual dinamakan Ijab (الإِيجَابُ).'
+        },
+        {
+          scenario: 'Ustaz Faris memberikan contoh jawapan pembeli: "Saya beli pen ini dengan harga RM2."',
+          q: 'Ucapan persetujuan daripada pihak pembeli ini dinamakan sebagai apa?',
+          options: [
+            'Ijab',
+            'Kabul (القَبُول)',
+            'Gharar',
+            'Syubhah'
+          ],
+          correct: 1,
+          explanation: 'Lafaz persetujuan penerimaan daripada pihak pembeli dinamakan Kabul (القَبُولُ).'
+        }
+      ],
+
+      // TAHAP 4: SYARAT JUAL BELI & 5 SYARAT IJAB KABUL
+      4: [
+        {
+          scenario: 'Ustaz Faris menghuraikan syarat-syarat yang wajib ada pada penjual dan pembeli.',
+          q: 'Antara berikut, manakah syarat sah bagi penjual dan pembeli (Al-‘Aqidan)?',
+          options: [
+            'Mestilah orang kaya yang memiliki gudang besar',
+            'Baligh, berakal, dengan kerelaan sendiri dan tidak terhalang mengurus harta',
+            'Mestilah berbangsa Arab sahaja',
+            'Mesti mempunyai lesen memandu'
+          ],
+          correct: 1,
+          explanation: 'Syarat Al-‘Aqidan: Baligh, berakal, dengan kerelaan sendiri (bukan dipaksa), dan bukan golongan terhalang mengurus harta (safih/pemboros).'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh seseorang yang dipaksa menjual barang kerana diugut.',
+          q: 'Apakah status akad jual beli yang dilakukan secara paksaan tanpa kerelaan?',
+          options: [
+            'Sah kerana barang bertukar tangan',
+            'Tidak sah kerana hilang syarat kerelaan sendiri',
+            'Sunat dibatalkan pada waktu malam',
+            'Harus jika dibayar tunai'
+          ],
+          correct: 1,
+          explanation: 'Akad jual beli mestilah berasaskan keredaan kedua-dua pihak, bukan atas paksaan zalim.'
+        },
+        {
+          scenario: 'Ustaz Faris menerangkan ciri-ciri barang jualan yang sah di sisi syarak.',
+          q: 'Antara berikut, yang manakah syarat sah bagi BARANG jualan (Al-Mabī‘)?',
+          options: [
+            'Suci daripada najis dan memberi manfaat mengikut syarak',
+            'Boleh terdiri daripada bangkai dan arak',
+            'Bebas daripada sebarang nilai harga',
+            'Mestilah barang curi yang murah'
+          ],
+          correct: 0,
+          explanation: 'Barang jualan mestilah suci daripada najis, bermanfaat di sisi syarak, dan milik sah penjual.'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh seseorang yang mahu menjual ikan yang masih berenang bebas di laut luas.',
+          q: 'Mengapakah penjualan burung liar di udara atau ikan di lautan lepas TIDAK SAH?',
+          options: [
+            'Kerana burung itu tiada warna cantik',
+            'Kerana tidak dapat diserahkan semasa akad (hilang syarat boleh diserah)',
+            'Kerana pembeli tidak suka burung',
+            'Kerana harga ikan terlalu murah'
+          ],
+          correct: 1,
+          explanation: 'Antara syarat barang jualan ialah berupaya diserahkan kepada pembeli ketika akad berlangsung.'
+        },
+        {
+          scenario: 'Ustaz Faris menyemak syarat pertama daripada 5 Syarat Ijab dan Kabul.',
+          q: 'Apakah syarat PERTAMA bagi Ijab dan Kabul (Sighah)?',
+          options: [
+            'Kabul mestilah bertepatan dengan Ijab (contoh: minta RM10, setuju RM10)',
+            'Kabul mesti disebut dalam bahasa asing',
+            'Penjual mesti bersedekah separuh harga',
+            'Pembeli mesti membawa dua orang peguam'
+          ],
+          correct: 0,
+          explanation: 'Syarat 1: Kabul mestilah bertepatan dan selaras dengan Ijab tanpa perbezaan harga atau barang.'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh: Penjual menawarkan kuih RM5, tetapi pembeli diam berjam-jam kemudian baru bersetuju.',
+          q: 'Mengapakah jual beli ini tidak sah mengikut syarat Ijab dan Kabul?',
+          options: [
+            'Kerana tidak berturutan antara Ijab dan Kabul dan diselangi pemisah yang lama',
+            'Kerana kuih itu telah sejuk',
+            'Kerana pembeli memakai baju merah',
+            'Kerana penjual tidak menyanyi'
+          ],
+          correct: 0,
+          explanation: 'Syarat 2: Hendaklah berturutan antara Ijab dan Kabul tanpa diselangi tempoh pemisah yang lama atau perkataan lain.'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan syarat majlis akad.',
+          q: 'Apakah syarat KETIGA bagi sahnya Ijab dan Kabul?',
+          options: [
+            'Bersambung dalam satu majlis akad yang sama',
+            'Dilakukan di dalam bangunan dua tingkat',
+            'Mendapat kebenaran jiran tetangga',
+            'Membayar wang pendahuluan 50%'
+          ],
+          correct: 0,
+          explanation: 'Syarat 3: Bersambung dalam satu majlis akad (kedua-dua pihak berada dalam situasi perbincangan yang sama).'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh ucapan: "Aku jual basikal ini kepadamu JIKA esok hari hujan lebat."',
+          q: 'Mengapakah akad ini TIDAK SAH menurut syarat Sighah?',
+          options: [
+            'Kerana akad tersebut bertaklik (digantungkan kepada syarat masa hadapan)',
+            'Kerana hari hujan sukar mengayuh basikal',
+            'Kerana basikal tidak mempunyai enjin',
+            'Kerana pembeli tidak membawa payung'
+          ],
+          correct: 0,
+          explanation: 'Syarat 4: Tidak bertaklik — lafaz akad tidak boleh digantungkan kepada peristiwa yang belum pasti pada masa hadapan.'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh ucapan: "Aku jual baju ini kepadamu selama sebulan sahaja, kemudian pulangkan balik."',
+          q: 'Mengapakah akad ini tidak sah sebagai akad jual beli?',
+          options: [
+            'Kerana jual beli dihadkan dengan tempoh masa tertentu (seperti sewaan)',
+            'Kerana saiz baju tidak muat',
+            'Kerana sebulan terlalu singkat untuk membasuh baju',
+            'Kerana baju tersebut tidak berbutang'
+          ],
+          correct: 0,
+          explanation: 'Syarat 5: Tidak dihadkan dengan tempoh masa tertentu. Jual beli memindahkan pemilikan secara kekal, bukan bertempoh.'
+        },
+        {
+          scenario: 'Ustaz Faris merumuskan jumlah syarat ijab kabul dalam nota Muamalat Darjah 4.',
+          q: 'Berapakah jumlah syarat sah bagi Ijab dan Kabul yang mesti dipatuhi dalam nota Muamalat?',
+          options: [
+            '3 syarat',
+            '5 syarat',
+            '7 syarat',
+            '10 syarat'
+          ],
+          correct: 1,
+          explanation: 'Terdapat 5 syarat sah bagi Ijab dan Kabul yang digariskan dalam sukatan pelajaran Muamalat Darjah 4.'
+        }
+      ],
+
+      // TAHAP 5: HUKUM JUAL BELI & ULANG KAJI
+      5: [
+        {
+          scenario: 'Ustaz Faris bertanya hukum asas bagi urus niaga dalam syariat Islam.',
+          q: 'Apakah hukum ASAL bagi urusan jual beli dalam Islam?',
+          options: [
+            'Haram',
+            'Makruh',
+            'Harus',
+            'Wajib kepada semua orang miskin'
+          ],
+          correct: 2,
+          explanation: 'Hukum asal jual beli ialah HARUS selagi mana memenuhi rukun dan syarat yang ditetapkan syarak.'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan situasi seseorang yang kebuluran dan memerlukan makanan demi kelangsungan hidup.',
+          q: 'Apakah hukum bagi peniaga menjual makanannya kepada orang yang kebuluran dalam keadaan darurat ini?',
+          options: [
+            'Harus sahaja',
+            'Wajib menjual makanan bagi menyelamatkan nyawanya',
+            'Makruh menjual makanan mahal',
+            'Sunat menolak permintaan pembeli'
+          ],
+          correct: 1,
+          explanation: 'Hukumnya WAJIB menjual makanan kepada orang yang kebuluran sekiranya tiada jalan lain untuk menyelamatkan nyawa.'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh urusan jual beli yang diniatkan membantu orang yang sangat susah.',
+          q: 'Apakah hukum jual beli yang bertujuan membantu meringankan beban orang yang memerlukan?',
+          options: [
+            'Haram kerana tiada keuntungan',
+            'Sunat (mendapat pahala kebajikan)',
+            'Makruh menolong orang',
+            'Wajib membayar zakat segera'
+          ],
+          correct: 1,
+          explanation: 'Hukumnya SUNAT apabila bertujuan memberi kemudahan dan pertolongan ihsan kepada mereka yang memerlukan.'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan situasi ketika azan pertama solat Jumaat berkumandang.',
+          q: 'Apakah hukum jual beli selepas azan PERTAMA solat Jumaat?',
+          options: [
+            'Harus',
+            'Makruh',
+            'Wajib',
+            'Sunat muakkad'
+          ],
+          correct: 1,
+          explanation: 'Hukumnya MAKRUH berjual beli selepas azan pertama solat Jumaat kerana melalaikan persiapan solat.'
+        },
+        {
+          scenario: 'Ustaz Faris membincangkan waktu azan kedua solat Jumaat ketika khatib telah menaiki mimbar.',
+          q: 'Apakah hukum jual beli bagi lelaki yang diwajibkan solat Jumaat pada waktu tersebut?',
+          options: [
+            'Harus jika cepat',
+            'Makruh sahaja',
+            'Haram dan berdosa',
+            'Sunat bersedekah'
+          ],
+          correct: 2,
+          explanation: 'Hukumnya HARAM bagi lelaki muslim berjual beli selepas azan kedua solat Jumaat berkumandang.'
+        },
+        {
+          scenario: 'Ustaz Faris memberi contoh barang-barang yang kotor dan dilarang.',
+          q: 'Apakah hukum jual beli barang yang najis dan dilarang syarak (seperti arak atau bangkai)?',
+          options: [
+            'Haram dan akadnya tidak sah',
+            'Harus jika dibayar cukai',
+            'Makruh tetapi wangnya halal',
+            'Sunat jika diniatkan sedekah'
+          ],
+          correct: 0,
+          explanation: 'Menjual barang haram dan najis seperti arak dan bangkai hukumnya HARAM dan perolehannya tidak berkat.'
+        },
+        {
+          scenario: 'Ustaz Faris menguji istilah Arab bagi penjual dan pembeli.',
+          q: 'Dalam urusan jual beli, penjual disebut sebagai _____ manakala pembeli disebut sebagai _____.',
+          options: [
+            'Al-Bā‘i / Al-Mushtarī',
+            'Al-Mushtarī / Al-Bā‘i',
+            'Al-Thaman / Al-Mabī‘',
+            'Al-Ijab / Al-Kabul'
+          ],
+          correct: 0,
+          explanation: 'Penjual ialah Al-Bā‘i (البَائِعُ) dan pembeli ialah Al-Mushtarī (المُشْتَرِي).'
+        },
+        {
+          scenario: 'Ustaz Faris membacakan hadis tentang keutamaan peniaga yang jujur.',
+          q: 'Apakah ganjaran yang dijanjikan oleh Rasulullah SAW bagi pedagang yang jujur dan amanah?',
+          options: [
+            'Ditempatkan bersama para Nabi, siddiqin dan para syuhada di akhirat',
+            'Diberikan istana emas di dunia sahaja',
+            'Dikecualikan daripada berpuasa Ramadan',
+            'Menjadi ketua seluruh pasar dunia'
+          ],
+          correct: 0,
+          explanation: 'Sabda Rasulullah SAW: Pedagang yang jujur dan amanah akan bersama para Nabi, orang yang benar dan syuhada di akhirat.'
+        },
+        {
+          scenario: 'Ustaz Faris meminta murid melengkapkan sebutan potongan ayat al-Baqarah: 275.',
+          q: 'Lengkapkan ayat ini: "وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ _______"',
+          options: [
+            'الرِّبَا (Ar-Ribā)',
+            'الصَّدَقَةَ (As-Sadaqah)',
+            'الصِّيغَةَ (As-Sighah)',
+            'البَائِعَ (Al-Bā‘i)'
+          ],
+          correct: 0,
+          explanation: 'Ayat lengkap Surah al-Baqarah 275: "وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا" (Dan mengharamkan riba).'
+        },
+        {
+          scenario: 'Ustaz Faris bertanyakan rumusan utama pembelajaran Pelajaran 1 Muamalat Darjah 4.',
+          q: 'Apakah kesimpulan terpenting daripada Pelajaran 1 Muamalat Darjah 4?',
+          options: [
+            'Boleh menipu asalkan pembeli tidak tahu',
+            'Jual beli adalah ibadah muamalat yang wajib mematuhi rukun, syarat dan batas syariat Allah',
+            'Hanya berniaga apabila harga barangan naik tinggi',
+            'Mata wang kertas tidak sah digunakan dalam Islam'
+          ],
+          correct: 1,
+          explanation: 'Jual beli adalah cabang ibadah muamalat yang wajib mematuhi rukun, syarat sah dan batas syariat demi mencapai keredaan Allah SWT.'
+        }
+      ]
+    };
+
+    /* ==========================================================================
+       3. MAKLUMAT LENCANA & TAHAP KUIZ AL-BAI‘
+       ========================================================================== */
+    const BADGES = {
+      1: { id: 1, name: 'Pakar Takrif Jual Beli', icon: '📖', desc: 'Lulus Tahap 1 (Pengertian Bahasa & Syarak).' },
+      2: { id: 2, name: 'Celik Dalil Baqarah', icon: '📜', desc: 'Lulus Tahap 2 (Surah al-Baqarah: 275).' },
+      3: { id: 3, name: 'Penjaga Tiga Rukun', icon: '⚖️', desc: 'Lulus Tahap 3 (Al-‘Aqidan, Al-Ma‘qud ‘Alaih, Al-Sighah).' },
+      4: { id: 4, name: 'Penilai Syarat & Sighah', icon: '🔍', desc: 'Lulus Tahap 4 (Syarat Sah & 5 Syarat Ijab Kabul).' },
+      5: { id: 5, name: 'Mumtaz Muamalat Darjah 4', icon: '👑', desc: 'Lulus Tahap 5 (Lima Hukum Jual Beli & Keseluruhan Topik).' }
+    };
+
+    const STAGE_TITLES = {
+      1: { name: 'Tahap 1 — Pengertian Jual Beli', tag: 'Tahap 1', desc: 'Takrif Bahasa & Syarak' },
+      2: { name: 'Tahap 2 — Dalil Jual Beli', tag: 'Tahap 2', desc: 'Surah al-Baqarah: 275' },
+      3: { name: 'Tahap 3 — Rukun Jual Beli', tag: 'Tahap 3', desc: 'Tiga Rukun Utama' },
+      4: { name: 'Tahap 4 — Syarat Jual Beli', tag: 'Tahap 4', desc: 'Syarat Sah & 5 Syarat Sighah' },
+      5: { name: 'Tahap 5 — Hukum Jual Beli', tag: 'Tahap 5', desc: 'Lima Hukum & Ulang Kaji' }
+    };
+
+    /* ==========================================================================
+       4. PENGURUSAN STATUS & SIMPANAN LOCALSTORAGE
+       ========================================================================== */
+    const STORAGE_KEY = 'AL_BAI_MUAMALAT_D4_DATA_V2';
+
+    let gameState = {
+      unlockedLevels: [1],
+      completedLevels: [],
+      coins: 0,
+      badges: [],
+      soundSettings: {
+        bgm: true,
+        sfx: true,
+        volume: 0.7
+      }
+    };
+
+    function loadSavedGame() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          gameState = {
+            ...gameState,
+            ...parsed,
+            soundSettings: { ...gameState.soundSettings, ...(parsed.soundSettings || {}) }
+          };
+        }
+      } catch (e) {
+        console.debug("Failed to read localStorage", e);
+      }
+      applySoundSettings();
+      updateHeaderUI();
+      updateLevelsUI();
+    }
+
+    function saveGame() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+      } catch (e) {
+        console.debug("Failed to save to localStorage", e);
+      }
+      updateHeaderUI();
+      updateLevelsUI();
+    }
+
+    function executeResetGame() {
+      gameState = {
+        unlockedLevels: [1],
+        completedLevels: [],
+        coins: 0,
+        badges: [],
+        soundSettings: {
+          bgm: true,
+          sfx: true,
+          volume: 0.7
+        }
+      };
+      saveGame();
+      closeModal('modal-confirm-reset');
+      closeModal('modal-settings');
+      showScreen('screen-home');
+      soundManager.playWrong();
+    }
+
+    function requestResetGame() {
+      soundManager.playClick();
+      openModal('modal-confirm-reset');
+    }
+
+    function showScreen(screenId) {
+      soundManager.playClick();
+      const screens = ['screen-home', 'screen-levels', 'screen-game', 'screen-result', 'screen-victory', 'screen-bonus'];
+      screens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (screenId === 'screen-levels' || screenId === 'screen-home') {
+        updateLevelsUI();
+      }
+    }
+
+    function startGame() {
+      soundManager.init();
+      soundManager.playClick();
+      if (gameState.soundSettings.bgm) {
+        soundManager.startBgm();
+      }
+      showScreen('screen-levels');
+    }
+
+    function updateHeaderUI() {
+      const elCoins = document.getElementById('header-coins');
+      const elBadges = document.getElementById('header-badges');
+      if (elCoins) elCoins.innerText = gameState.coins;
+      if (elBadges) elBadges.innerText = `${gameState.badges.length}/5`;
+    }
+
+    function updateLevelsUI() {
+      const completedCount = gameState.completedLevels.length;
+      const progressPercent = Math.round((completedCount / 5) * 100);
+
+      const elText = document.getElementById('levels-progress-text');
+      const elBar = document.getElementById('levels-progress-bar');
+      if (elText) elText.innerText = `${completedCount} / 5 Tahap (${progressPercent}%)`;
+      if (elBar) elBar.style.width = `${progressPercent}%`;
+
+      for (let lvl = 1; lvl <= 5; lvl++) {
+        const isUnlocked = gameState.unlockedLevels.includes(lvl);
+        const isCompleted = gameState.completedLevels.includes(lvl);
+
+        const cardEl = document.getElementById(`card-stage-${lvl}`);
+        const statusEl = document.getElementById(`status-stage-${lvl}`);
+        const btnEl = document.getElementById(`btn-stage-${lvl}`);
+
+        if (lvl === 1) {
+          if (isCompleted) {
+            statusEl.innerHTML = `<span class="text-emerald-700 font-bold">✓ Selesai (10/10)</span>`;
+          } else {
+            statusEl.innerHTML = `<span class="text-emerald-600 font-bold">● Terbuka</span>`;
+          }
+          continue;
+        }
+
+        if (isCompleted) {
+          if (cardEl) cardEl.className = "bg-white rounded-2xl p-5 border-2 border-emerald-500 shadow-md flex flex-col justify-between";
+          if (statusEl) statusEl.innerHTML = `<span class="text-emerald-700 font-bold">✓ Selesai (10/10)</span>`;
+          if (btnEl) {
+            btnEl.className = "btn-3d px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow cursor-pointer";
+            btnEl.innerText = "Ulang Kaji ➔";
+            btnEl.disabled = false;
+          }
+        } else if (isUnlocked) {
+          if (cardEl) cardEl.className = "bg-white rounded-2xl p-5 border-2 border-amber-400 shadow-lg flex flex-col justify-between";
+          if (statusEl) statusEl.innerHTML = `<span class="text-amber-600 font-bold">⚡ Sedia untuk Kuiz</span>`;
+          if (btnEl) {
+            btnEl.className = "btn-3d px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs rounded-xl shadow cursor-pointer";
+            btnEl.innerText = "Mula Kuiz ➔";
+            btnEl.disabled = false;
+          }
+        } else {
+          if (cardEl) cardEl.className = "bg-slate-50 rounded-2xl p-5 border-2 border-slate-200 shadow-sm flex flex-col justify-between opacity-80";
+          if (statusEl) statusEl.innerHTML = `<span class="text-slate-500 font-medium">🔒 Perlu Lulus Tahap ${lvl - 1}</span>`;
+          if (btnEl) {
+            btnEl.className = "btn-3d px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed";
+            btnEl.innerText = "Kunci 🔒";
+            btnEl.disabled = true;
+          }
+        }
+      }
+    }
+
+    /* ==========================================================================
+       5. SISTEM KUIZ & SOALAN DENGAN SYARAT 10/10
+       ========================================================================== */
+    let currentLevel = 1;
+    let currentQIndex = 0;
+    let currentLevelScore = 0;
+    let currentLevelQuestions = [];
+    let isQuestionAnswered = false;
+
+    /* ==========================================================================
+       5B. SISTEM MOD JAWAPAN TEKANAN ISYARAT JARI (PADA SKRIN — TANPA KAMERA)
+       ========================================================================== */
+    let currentAnswerMode = 'touch'; // 'touch' atau 'gesture'
+    let pendingLevelToStart = null;
+
+    function openChooseModeModal(lvl = null) {
+      soundManager.playClick();
+      if (lvl) pendingLevelToStart = lvl;
+      openModal('modal-choose-mode');
+    }
+
+    function confirmChooseMode(mode) {
+      soundManager.playClick();
+      closeModal('modal-choose-mode');
+
+      if (mode === 'gesture') {
+        openModal('modal-gesture-guide');
+      } else {
+        setAnswerMode(mode);
+        if (pendingLevelToStart) {
+          const l = pendingLevelToStart;
+          pendingLevelToStart = null;
+          enterLevel(l);
+        }
+      }
+    }
+
+    function confirmStartFromGuide() {
+      closeModal('modal-gesture-guide');
+      setAnswerMode('gesture');
+      if (pendingLevelToStart) {
+        const l = pendingLevelToStart;
+        pendingLevelToStart = null;
+        enterLevel(l);
+      } else {
+        const scrGame = document.getElementById('screen-game');
+        if (scrGame && scrGame.classList.contains('hidden')) {
+          showScreen('screen-levels');
+        }
+      }
+    }
+
+    function setAnswerMode(mode) {
+      soundManager.playClick();
+      currentAnswerMode = mode;
+
+      const btnTouch = document.getElementById('btn-mode-touch');
+      const btnGesture = document.getElementById('btn-mode-gesture');
+      const hudContainer = document.getElementById('gesture-hud-container');
+
+      if (mode === 'gesture') {
+        if (btnGesture) btnGesture.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-900 shadow-sm transition flex items-center space-x-1";
+        if (btnTouch) btnTouch.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-emerald-700 transition flex items-center space-x-1";
+        if (hudContainer) hudContainer.classList.remove('hidden');
+
+        // Mulakan kamera latar belakang (tanpa paparan video)
+        initBackgroundGestureTracking();
+      } else {
+        if (btnTouch) btnTouch.className = "px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-sm transition flex items-center space-x-1";
+        if (btnGesture) btnGesture.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-emerald-700 transition flex items-center space-x-1";
+        if (hudContainer) hudContainer.classList.add('hidden');
+
+        // Hentikan kamera dan pemprosesan serta-merta
+        stopBackgroundGestureTracking();
+      }
+
+      updateOptionLabelsStyle();
+    }
+
+    function updateOptionLabelsStyle() {
+      const qData = currentLevelQuestions[currentQIndex];
+      if (!qData) return;
+
+      const gestureSymbols = ['☝️ [A] 1 Jari', '✌️ [B] 2 Jari', '🤟 [C] 3 Jari', '🖖 [D] 4 Jari'];
+      const standardLabels = ['A', 'B', 'C', 'D'];
+
+      qData.options.forEach((_, idx) => {
+        const badge = document.getElementById(`opt-label-${idx}`);
+        if (badge) {
+          if (currentAnswerMode === 'gesture') {
+            badge.innerText = gestureSymbols[idx];
+            badge.className = "px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900 font-black text-xs flex-shrink-0 border-2 border-amber-300 shadow-sm";
+          } else {
+            badge.innerText = standardLabels[idx];
+            badge.className = "w-7 h-7 rounded-xl bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0 border border-slate-300";
+          }
+        }
+      });
+    }
+
+    /* ==========================================================================
+       5C. ENJIN PENGECAMAN ISYARAT JARI SEBENAR (LATAR BELAKANG — TANPA VIDEO)
+       ========================================================================== */
+    let gestureCameraInstance = null;
+    let mediapipeHandsInstance = null;
+    let gestureStream = null;
+    let isGestureTrackingActive = false;
+
+    // Pembolehubah pemantauan kestabilan 1 saat
+    let candidateChoice = null;
+    let candidateStartTime = 0;
+    const GESTURE_HOLD_DURATION_MS = 1000; // 1 saat stabil
+
+    async function initBackgroundGestureTracking() {
+      const errBox = document.getElementById('gesture-error-alert');
+      const errMsg = document.getElementById('gesture-error-msg');
+      if (errBox) errBox.classList.add('hidden');
+
+      const videoElement = document.getElementById('gesture-hidden-video');
+      if (!videoElement) return;
+
+      // Semak sokongan getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showGestureError("Pelayar web ini tidak menyokong akses kamera. Sila gunakan Mod Tekan Jawapan.");
+        return;
+      }
+
+      // Semak ketersediaan MediaPipe Hands
+      if (typeof Hands === 'undefined') {
+        showGestureError("Pustaka pengesanan tangan sedang dimuatkan atau terhalang. Sila semak sambungan internet atau guna Mod Tekan.");
+        return;
+      }
+
+      try {
+        updateGestureHUDStatus("Memulakan kamera latar belakang...", "🟡", false);
+
+        if (!mediapipeHandsInstance) {
+          mediapipeHandsInstance = new Hands({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+          });
+
+          mediapipeHandsInstance.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.5
+          });
+
+          mediapipeHandsInstance.onResults(onGestureLandmarksDetected);
+        }
+
+        // Minta kebenaran kamera pengguna
+        gestureStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'user',
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          },
+          audio: false
+        });
+
+        videoElement.srcObject = gestureStream;
+        await videoElement.play();
+
+        isGestureTrackingActive = true;
+        updateGestureHUDStatus("Kamera Aktif di Latar Belakang (Tanpa Paparan Video)", "🟢", true);
+
+        // Gelung pemprosesan bingkai kamera latar belakang
+        processGestureFrameLoop();
+
+      } catch (err) {
+        console.warn("Ralat akses kamera:", err);
+        let msg = "Kebenaran kamera ditolak atau kamera tidak tersedia. Sila gunakan Mod Tekan Jawapan.";
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          msg = "Akses kamera tidak dibenarkan oleh pengguna. Sila gunakan Mod Tekan Jawapan.";
+        } else if (err.name === 'NotFoundError') {
+          msg = "Tiada perkakasan kamera dikesan pada peranti ini. Beralih ke Mod Tekan Jawapan.";
+        }
+        showGestureError(msg);
+      }
+    }
+
+    async function processGestureFrameLoop() {
+      const videoElement = document.getElementById('gesture-hidden-video');
+      if (!isGestureTrackingActive || !videoElement || videoElement.paused || videoElement.ended) {
+        return;
+      }
+
+      try {
+        if (mediapipeHandsInstance && videoElement.readyState >= 2) {
+          await mediapipeHandsInstance.send({ image: videoElement });
+        }
+      } catch (e) {
+        console.debug("Gesture frame send tick", e);
+      }
+
+      if (isGestureTrackingActive) {
+        requestAnimationFrame(processGestureFrameLoop);
+      }
+    }
+
+    function stopBackgroundGestureTracking() {
+      isGestureTrackingActive = false;
+      candidateChoice = null;
+      candidateStartTime = 0;
+      resetGestureProgressBar();
+
+      const videoElement = document.getElementById('gesture-hidden-video');
+      if (videoElement) {
+        videoElement.pause();
+        videoElement.srcObject = null;
+      }
+
+      if (gestureStream) {
+        gestureStream.getTracks().forEach(track => track.stop());
+        gestureStream = null;
+      }
+
+      updateGestureHUDStatus("Kamera Tidak Aktif", "⚪", false);
+    }
+
+    function showGestureError(msg) {
+      stopBackgroundGestureTracking();
+      const errBox = document.getElementById('gesture-error-alert');
+      const errMsg = document.getElementById('gesture-error-msg');
+      if (errBox && errMsg) {
+        errMsg.innerText = `⚠️ ${msg}`;
+        errBox.classList.remove('hidden');
+      }
+      updateGestureHUDStatus("Kamera Terhenti / Ralat", "🔴", false);
+    }
+
+    function updateGestureHUDStatus(text, dotColor, isPinging) {
+      const stText = document.getElementById('gesture-status-text');
+      const stDot = document.getElementById('gesture-status-dot');
+      const stPing = document.getElementById('gesture-status-ping');
+
+      if (stText) stText.innerText = text;
+      if (stDot) {
+        stDot.className = dotColor === "🟢"
+          ? "relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
+          : (dotColor === "🟡" ? "relative inline-flex rounded-full h-3 w-3 bg-amber-500" : "relative inline-flex rounded-full h-3 w-3 bg-rose-500");
+      }
+      if (stPing) {
+        stPing.style.display = isPinging ? 'inline-flex' : 'none';
+      }
+    }
+
+    function onGestureLandmarksDetected(results) {
+      if (!isGestureTrackingActive || isQuestionAnswered) {
+        resetGestureProgressBar();
+        return;
+      }
+
+      if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+        // Tangan tidak kelihatan di hadapan kamera
+        updateGestureLiveHUD(null, "Tangan tidak dikesan. Sila angkat tangan di hadapan kamera.", "✋");
+        resetCandidate();
+        return;
+      }
+
+      const landmarks = results.multiHandLandmarks[0];
+      const fingerCount = countExtendedFingers(landmarks);
+
+      // Pemetaan:
+      // 1 Jari = Pilihan 0 (A)
+      // 2 Jari = Pilihan 1 (B)
+      // 3 Jari = Pilihan 2 (C)
+      // 4 Jari = Pilihan 3 (D)
+      if (fingerCount >= 1 && fingerCount <= 4) {
+        const choiceIdx = fingerCount - 1;
+        const choiceLetter = ['A', 'B', 'C', 'D'][choiceIdx];
+        const choiceIcon = ['☝️', '✌️', '🤟', '🖖'][choiceIdx];
+
+        updateGestureLiveHUD(choiceIdx, `${choiceIcon} ${fingerCount} JARI = JAWAPAN [${choiceLetter}]`, choiceIcon);
+        handleStableCandidateHolding(choiceIdx);
+      } else if (fingerCount === 5) {
+        updateGestureLiveHUD(null, "✋ 5 Jari (Tapak Terbuka). Sila tunjukkan 1 hingga 4 jari untuk memilih jawapan.", "✋");
+        resetCandidate();
+      } else {
+        updateGestureLiveHUD(null, "Tangan digenggam. Angkat 1 hingga 4 jari untuk memilih A, B, C atau D.", "✊");
+        resetCandidate();
+      }
+    }
+
+    function countExtendedFingers(lm) {
+      let count = 0;
+
+      // Jari Telunjuk: tip (8) lebih tinggi daripada pip (6)
+      if (lm[8].y < lm[6].y) count++;
+
+      // Jari Hantu / Tengah: tip (12) lebih tinggi daripada pip (10)
+      if (lm[12].y < lm[10].y) count++;
+
+      // Jari Manis: tip (16) lebih tinggi daripada pip (14)
+      if (lm[16].y < lm[14].y) count++;
+
+      // Jari Kelingking: tip (20) lebih tinggi daripada pip (18)
+      if (lm[20].y < lm[18].y) count++;
+
+      return count;
+    }
+
+    function handleStableCandidateHolding(choiceIdx) {
+      const now = performance.now();
+
+      if (candidateChoice === choiceIdx) {
+        const elapsed = now - candidateStartTime;
+        const percent = Math.min(100, Math.round((elapsed / GESTURE_HOLD_DURATION_MS) * 100));
+
+        updateHoldProgress(percent);
+
+        if (elapsed >= GESTURE_HOLD_DURATION_MS) {
+          // Kestabilan 1 saat dicapai -> Hantar jawapan secara automatik!
+          const finalChoice = choiceIdx;
+          candidateChoice = null;
+          candidateStartTime = 0;
+          resetGestureProgressBar();
+
+          // Panggil fungsi semakan jawapan rasmi
+          handleSelectOption(finalChoice);
+        }
+      } else {
+        // Isyarat baru dikesan, mulakan pengiraan masa kestabilan
+        candidateChoice = choiceIdx;
+        candidateStartTime = now;
+        updateHoldProgress(5);
+      }
+    }
+
+    function resetCandidate() {
+      candidateChoice = null;
+      candidateStartTime = 0;
+      resetGestureProgressBar();
+    }
+
+    function resetGestureProgressBar() {
+      updateHoldProgress(0);
+    }
+
+    function updateHoldProgress(pct) {
+      const bar = document.getElementById('gesture-hold-bar');
+      const text = document.getElementById('gesture-hold-percent');
+      if (bar) bar.style.width = `${pct}%`;
+      if (text) text.innerText = `${pct}%`;
+    }
+
+    function updateGestureLiveHUD(choiceIdx, labelText, iconText) {
+      const lbl = document.getElementById('gesture-current-label');
+      const icn = document.getElementById('gesture-current-icon');
+      if (lbl) lbl.innerText = labelText;
+      if (icn) icn.innerText = iconText;
+
+      // Serlahkan kad pilihan yang sedang dikesan seketika
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-btn-${i}`);
+        if (btn && !isQuestionAnswered) {
+          if (i === choiceIdx) {
+            btn.classList.add('ring-2', 'ring-amber-400', 'bg-amber-50');
+          } else {
+            btn.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-50');
+          }
+        }
+      }
+    }
+
+    function enterLevel(lvl) {
+      if (!gameState.unlockedLevels.includes(lvl)) {
+        soundManager.playWrong();
+        return;
+      }
+      soundManager.playClick();
+      currentLevel = lvl;
+      currentQIndex = 0;
+      currentLevelScore = 0;
+      currentLevelQuestions = [...QUESTION_BANK[lvl]];
+
+      const stageInfo = STAGE_TITLES[lvl];
+      document.getElementById('game-location-tag').innerText = stageInfo.tag;
+      document.getElementById('game-stage-title').innerText = stageInfo.desc;
+
+      showScreen('screen-game');
+      renderQuestion();
+      setAnswerMode(currentAnswerMode);
+    }
+
+    function confirmExitLevel() {
+      soundManager.playClick();
+      stopBackgroundGestureTracking();
+      showScreen('screen-levels');
+    }
+
+    function renderQuestion() {
+      isQuestionAnswered = false;
+      resetCandidate();
+      const qData = currentLevelQuestions[currentQIndex];
+
+      const expBox = document.getElementById('explanation-box');
+      expBox.classList.add('hidden');
+
+      document.getElementById('current-q-num').innerText = currentQIndex + 1;
+      document.getElementById('level-score-counter').innerText = `${currentLevelScore}/10`;
+      
+      const percent = ((currentQIndex) / 10) * 100;
+      document.getElementById('game-progress-bar').style.width = `${percent}%`;
+
+      document.getElementById('question-scenario').innerText = `"${qData.scenario}"`;
+
+      const arabBox = document.getElementById('question-arabic-box');
+      if (qData.arabicText) {
+        arabBox.classList.remove('hidden');
+        document.getElementById('question-arabic-text').innerText = qData.arabicText;
+        document.getElementById('question-arabic-sub').innerText = qData.arabicSub || '';
+      } else {
+        arabBox.classList.add('hidden');
+      }
+
+      document.getElementById('question-main-text').innerText = qData.q;
+
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      const optionLabels = ['A', 'B', 'C', 'D'];
+      const gestureSymbols = ['☝️ [A] 1 Jari', '✌️ [B] 2 Jari', '🤟 [C] 3 Jari', '🖖 [D] 4 Jari'];
+
+      qData.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "btn-3d w-full p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-300 text-left transition flex items-center space-x-3 text-xs md:text-sm shadow-sm";
+        btn.id = `opt-btn-${idx}`;
+        btn.onclick = () => handleSelectOption(idx);
+
+        const isGest = (currentAnswerMode === 'gesture');
+        const badgeClass = isGest
+          ? "px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900 font-black text-xs flex-shrink-0 border-2 border-amber-300 shadow-sm"
+          : "w-7 h-7 rounded-xl bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0 border border-slate-300";
+        const badgeLabel = isGest ? gestureSymbols[idx] : optionLabels[idx];
+
+        btn.innerHTML = `
+          <span id="opt-label-${idx}" class="${badgeClass}">
+            ${badgeLabel}
+          </span>
+          <span class="font-medium text-slate-800 leading-snug">${optText}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function handleSelectOption(selectedIdx) {
+      if (isQuestionAnswered) return;
+      isQuestionAnswered = true; // Kunci supaya jawapan tidak dihantar berulang kali
+      resetCandidate();
+
+      const qData = currentLevelQuestions[currentQIndex];
+      const isCorrect = (selectedIdx === qData.correct);
+
+      // Kunci dan tandakan pilihan butang teks
+      qData.options.forEach((_, idx) => {
+        const btn = document.getElementById(`opt-btn-${idx}`);
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.remove('hover:bg-emerald-50', 'hover:border-emerald-300', 'ring-2', 'ring-amber-400');
+
+          if (idx === qData.correct) {
+            btn.className = "w-full p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-950 font-bold text-left flex items-center space-x-3 shadow-md";
+            const iconSpan = btn.querySelector('span');
+            if (iconSpan) {
+              iconSpan.className = "w-7 h-7 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-xs flex-shrink-0";
+              iconSpan.innerText = "✓";
+            }
+          } else if (idx === selectedIdx && !isCorrect) {
+            btn.className = "w-full p-3.5 rounded-2xl border-2 border-rose-400 bg-rose-100 text-rose-950 font-medium text-left flex items-center space-x-3";
+            const iconSpan = btn.querySelector('span');
+            if (iconSpan) {
+              iconSpan.className = "w-7 h-7 rounded-xl bg-rose-500 text-white font-black flex items-center justify-center text-xs flex-shrink-0";
+              iconSpan.innerText = "✕";
+            }
+          } else {
+            btn.classList.add('opacity-50');
+          }
+        }
+      });
+
+      if (isCorrect) {
+        soundManager.playCorrect();
+        currentLevelScore++;
+        gameState.coins += 10;
+        soundManager.playCoin();
+        updateHeaderUI();
+      } else {
+        soundManager.playWrong();
+      }
+
+      const expBox = document.getElementById('explanation-box');
+      const expTitle = document.getElementById('explanation-title');
+      const expText = document.getElementById('explanation-text');
+
+      expBox.classList.remove('hidden');
+      if (isCorrect) {
+        expBox.className = "mt-4 p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50/90 text-xs md:text-sm";
+        expTitle.innerHTML = `<span class="text-emerald-700">✓ Tepat Sekali! Penjelasan Ustaz Faris:</span>`;
+      } else {
+        expBox.className = "mt-4 p-4 rounded-2xl border-2 border-rose-300 bg-rose-50/90 text-xs md:text-sm";
+        expTitle.innerHTML = `<span class="text-rose-700">✕ Kurang Tepat. Penerangan Ustaz Faris:</span>`;
+      }
+      expText.innerText = qData.explanation;
+
+      const btnNext = document.getElementById('btn-next-question');
+      if (currentQIndex === 9) {
+        btnNext.innerHTML = `<span>Lihat Keputusan Tahap</span> <span>🏆</span>`;
+      } else {
+        btnNext.innerHTML = `<span>Soalan Seterusnya</span> <span>➔</span>`;
+      }
+    }
+
+    function proceedNextQuestion() {
+      soundManager.playClick();
+      if (currentQIndex < 9) {
+        currentQIndex++;
+        renderQuestion();
+      } else {
+        finishLevelSummary();
+      }
+    }
+
+    function finishLevelSummary() {
+      stopBackgroundGestureTracking();
+      const isPassed = (currentLevelScore === 10);
+      showScreen('screen-result');
+
+      const iconContainer = document.getElementById('result-icon-container');
+      const titleEl = document.getElementById('result-title');
+      const subEl = document.getElementById('result-subtitle');
+      const scoreDisplay = document.getElementById('result-score-display');
+      const statusTag = document.getElementById('result-status-tag');
+      const rewardCoins = document.getElementById('result-reward-coins');
+      const badgeBox = document.getElementById('result-badge-container');
+      const reqNote = document.getElementById('result-requirement-note');
+      const btnNext = document.getElementById('btn-result-next');
+      const btnRetry = document.getElementById('btn-result-retry');
+
+      scoreDisplay.innerText = `${currentLevelScore} / 10`;
+
+      if (isPassed) {
+        soundManager.playLevelComplete();
+        iconContainer.innerText = '🏆';
+        titleEl.innerText = `Tahniah! Tahap ${currentLevel} Selesai Sempurna!`;
+        subEl.innerText = `Hebat! Anda menguasai semua 10 soalan ${STAGE_TITLES[currentLevel].name}.`;
+        
+        statusTag.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+        statusTag.innerText = "LULUS CEMERLANG (10/10)";
+        
+        rewardCoins.innerText = "+100 🪙";
+        gameState.coins += 100;
+
+        if (!gameState.completedLevels.includes(currentLevel)) {
+          gameState.completedLevels.push(currentLevel);
+        }
+
+        const nextLvl = currentLevel + 1;
+        if (nextLvl <= 5 && !gameState.unlockedLevels.includes(nextLvl)) {
+          gameState.unlockedLevels.push(nextLvl);
+        }
+
+        const badgeInfo = BADGES[currentLevel];
+        if (badgeInfo && !gameState.badges.includes(currentLevel)) {
+          gameState.badges.push(currentLevel);
+          soundManager.playBadge();
+          badgeBox.classList.remove('hidden');
+          document.getElementById('result-badge-icon').innerText = badgeInfo.icon;
+          document.getElementById('result-badge-name').innerText = badgeInfo.name;
+          document.getElementById('result-badge-desc').innerText = badgeInfo.desc;
+        } else {
+          badgeBox.classList.add('hidden');
+        }
+
+        reqNote.classList.add('hidden');
+        btnNext.classList.remove('hidden');
+        btnRetry.innerText = "Ulang Kaji Semula";
+        btnRetry.className = "btn-3d flex-1 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs md:text-sm rounded-xl shadow";
+
+        saveGame();
+
+        if (gameState.completedLevels.length === 5) {
+          btnNext.innerHTML = `<span>👑 Lihat Sijil Kejayaan Akhir</span>`;
+          btnNext.onclick = showVictoryScreen;
+        } else {
+          btnNext.innerHTML = `<span>📋 Teruskan ke Pilihan Tahap</span>`;
+          btnNext.onclick = () => showScreen('screen-levels');
+        }
+
+      } else {
+        soundManager.playWrong();
+        iconContainer.innerText = '📖';
+        titleEl.innerText = `Teruskan Usaha!`;
+        subEl.innerText = `Anda memperoleh ${currentLevelScore} markah. Sukatan memerlukan ketepatan 10/10 untuk melengkapkan tahap ini.`;
+        
+        statusTag.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800";
+        statusTag.innerText = "BELUM LULUS (PERLU 10/10)";
+        
+        rewardCoins.innerText = "+0 🪙";
+        badgeBox.classList.add('hidden');
+        reqNote.classList.remove('hidden');
+
+        btnRetry.className = "btn-3d flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs md:text-sm rounded-xl shadow animate-pulse";
+        btnRetry.innerText = "🔄 Cuba Lagi (10/10)";
+
+        btnNext.classList.remove('hidden');
+        btnNext.innerHTML = `<span>📚 Buka Nota Pembelajaran</span>`;
+        btnNext.onclick = () => openModal('modal-notes');
+
+        saveGame();
+      }
+    }
+
+    function retryCurrentLevel() {
+      enterLevel(currentLevel);
+    }
+
+    function proceedToNextLevelFromSummary() {
+      showScreen('screen-levels');
+    }
+
+    function showVictoryScreen() {
+      soundManager.playLevelComplete();
+      showScreen('screen-victory');
+
+      document.getElementById('victory-total-coins').innerText = `${gameState.coins} 🪙`;
+
+      const listContainer = document.getElementById('victory-badges-list');
+      listContainer.innerHTML = '';
+
+      for (let i = 1; i <= 5; i++) {
+        const b = BADGES[i];
+        const div = document.createElement('div');
+        div.className = "p-2 bg-white rounded-xl border-2 border-amber-300 shadow-sm flex flex-col items-center text-center";
+        div.innerHTML = `
+          <span class="text-3xl mb-1">${b.icon}</span>
+          <span class="text-[10px] font-bold text-slate-800 leading-tight">${b.name}</span>
+          <span class="text-[9px] text-emerald-700 font-semibold mt-0.5">Tahap ${i} Selesai</span>
+        `;
+        listContainer.appendChild(div);
+      }
+    }
+
+    /* ==========================================================================
+       6. MOD CABARAN KILAT BERMASA (AKTIVITI PILIHAN)
+       ========================================================================== */
+    let bonusTimer = null;
+    let bonusTimeLeft = 30;
+    let bonusCoinsEarned = 0;
+    let bonusQuestionList = [];
+
+    function openBonusMode() {
+      soundManager.playClick();
+      bonusTimeLeft = 30;
+      bonusCoinsEarned = 0;
+      
+      bonusQuestionList = [];
+      for (let i = 1; i <= 5; i++) {
+        bonusQuestionList.push(...QUESTION_BANK[i]);
+      }
+      bonusQuestionList.sort(() => Math.random() - 0.5);
+
+      document.getElementById('bonus-timer-display').innerText = `${bonusTimeLeft}s`;
+      document.getElementById('bonus-score-display').innerText = `+0 🪙`;
+      document.getElementById('bonus-quiz-body').classList.remove('hidden');
+      document.getElementById('bonus-gameover-body').classList.add('hidden');
+
+      showScreen('screen-bonus');
+      renderBonusQuestion();
+
+      if (bonusTimer) clearInterval(bonusTimer);
+      bonusTimer = setInterval(() => {
+        bonusTimeLeft--;
+        const el = document.getElementById('bonus-timer-display');
+        if (el) el.innerText = `${bonusTimeLeft}s`;
+
+        if (bonusTimeLeft <= 0) {
+          clearInterval(bonusTimer);
+          endBonusMode();
+        }
+      }, 1000);
+    }
+
+    function renderBonusQuestion() {
+      if (bonusQuestionList.length === 0) {
+        endBonusMode();
+        return;
+      }
+      const q = bonusQuestionList.pop();
+      document.getElementById('bonus-question-text').innerText = q.q;
+
+      const cont = document.getElementById('bonus-options-container');
+      cont.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "btn-3d p-3 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-xl text-left text-xs font-semibold text-slate-800 transition";
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (idx === q.correct) {
+            soundManager.playCoin();
+            bonusCoinsEarned += 20;
+            gameState.coins += 20;
+            document.getElementById('bonus-score-display').innerText = `+${bonusCoinsEarned} 🪙`;
+            updateHeaderUI();
+          } else {
+            soundManager.playWrong();
+          }
+          renderBonusQuestion();
+        };
+        cont.appendChild(btn);
+      });
+    }
+
+    function endBonusMode() {
+      if (bonusTimer) clearInterval(bonusTimer);
+      soundManager.playBadge();
+      document.getElementById('bonus-quiz-body').classList.add('hidden');
+      document.getElementById('bonus-gameover-body').classList.remove('hidden');
+      document.getElementById('bonus-final-summary').innerText = `Hebat! Anda mengumpul ${bonusCoinsEarned} syiling bonus dalam masa 30 saat!`;
+      saveGame();
+    }
+
+    /* ==========================================================================
+       7. SISTEM MODAL & NOTA PEMBELAJARAN
+       ========================================================================== */
+    function openModal(modalId) {
+      soundManager.playClick();
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+      soundManager.playClick();
+      const el = document.getElementById(modalId);
+      if (el) el.classList.add('hidden');
+    }
+
+    function switchNoteTab(tabId) {
+      soundManager.playClick();
+      const tabs = ['tab-pengertian', 'tab-dalil', 'tab-rukun', 'tab-syarat', 'tab-hukum'];
+      tabs.forEach(t => {
+        const c = document.getElementById(t);
+        const b = document.getElementById(`btn-${t}`);
+        if (c) c.classList.add('hidden');
+        if (b) {
+          b.className = "px-3 py-1.5 rounded-xl bg-teal-100 text-teal-800 hover:bg-teal-200 transition flex-shrink-0";
+        }
+      });
+      const targetContent = document.getElementById(tabId);
+      const targetBtn = document.getElementById(`btn-${tabId}`);
+      if (targetContent) targetContent.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.className = "px-3 py-1.5 rounded-xl bg-teal-700 text-white transition flex-shrink-0";
+      }
+    }
+
+    function openOriginalRefHelper() {
+      openModal('modal-original-ref');
+    }
+
+    /* ==========================================================================
+       8. TETAPAN AUDIO & KELANTANGAN
+       ========================================================================== */
+    function toggleBgmSetting() {
+      gameState.soundSettings.bgm = !gameState.soundSettings.bgm;
+      applySoundSettings();
+      saveGame();
+    }
+
+    function toggleSfxSetting() {
+      gameState.soundSettings.sfx = !gameState.soundSettings.sfx;
+      applySoundSettings();
+      saveGame();
+    }
+
+    function changeVolumeSetting(val) {
+      const num = parseInt(val, 10) / 100;
+      gameState.soundSettings.volume = num;
+      document.getElementById('volume-label').innerText = `${val}%`;
+      soundManager.setMasterVolume(num);
+      saveGame();
+    }
+
+    function applySoundSettings() {
+      soundManager.musicEnabled = gameState.soundSettings.bgm;
+      soundManager.sfxEnabled = gameState.soundSettings.sfx;
+      soundManager.setMasterVolume(gameState.soundSettings.volume);
+
+      const btnBgm = document.getElementById('toggle-bgm');
+      const btnSfx = document.getElementById('toggle-sfx');
+
+      if (btnBgm) {
+        btnBgm.innerText = gameState.soundSettings.bgm ? "HIDUP" : "MATI";
+        btnBgm.className = gameState.soundSettings.bgm
+          ? "px-4 py-1.5 rounded-full font-bold text-xs bg-emerald-600 text-white transition"
+          : "px-4 py-1.5 rounded-full font-bold text-xs bg-slate-300 text-slate-700 transition";
+      }
+
+      if (btnSfx) {
+        btnSfx.innerText = gameState.soundSettings.sfx ? "HIDUP" : "MATI";
+        btnSfx.className = gameState.soundSettings.sfx
+          ? "px-4 py-1.5 rounded-full font-bold text-xs bg-emerald-600 text-white transition"
+          : "px-4 py-1.5 rounded-full font-bold text-xs bg-slate-300 text-slate-700 transition";
+      }
+
+      if (gameState.soundSettings.bgm && !soundManager.bgmPlaying) {
+        soundManager.startBgm();
+      } else if (!gameState.soundSettings.bgm && soundManager.bgmPlaying) {
+        soundManager.stopBgm();
+      }
+    }
+
+    /* ==========================================================================
+       9. PERMULAAN APLIKASI
+       ========================================================================== */
+    window.onload = function() {
+      loadSavedGame();
+      document.body.addEventListener('click', function unlockAudio() {
+        soundManager.init();
+        document.body.removeEventListener('click', unlockAudio);
+      }, { once: true });
+    };
+  </script>
+</body>
+</html>
